@@ -5,6 +5,9 @@ class StockPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text('Estoque')));
+    return Scaffold(
+      appBar: AppBar(title: Text('Estoque')),
+      body: Center(child: Text('Nada aqui')),
+    );
   }
 }

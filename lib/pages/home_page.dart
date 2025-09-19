@@ -9,24 +9,45 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Gringo\'s Massas')),
-      body: Column(
-        children: [
-          HomePageButton(
-            title: 'Produtos',
-            icon: Icon(Icons.sell_rounded),
-            route: AppRoutes.PRODUCTS,
-          ),
-          HomePageButton(
-            title: 'Estoque',
-            icon: Icon(Icons.inventory_2_rounded),
-            route: AppRoutes.STOCK,
-          ),
-          HomePageButton(
-            title: 'Vendas',
-            icon: Icon(Icons.shopping_cart_rounded),
-            route: AppRoutes.SALES,
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          children: [
+            Image.asset('assets/logo.png', width: MediaQuery.sizeOf(context).width * 0.5,),
+            SizedBox(height: 16,),
+            Expanded(
+              child: GridView(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                padding: EdgeInsets.all(4),
+        
+                children: [
+                  HomePageButton(
+                    title: 'Produtos',
+                    icon: Icons.sell_rounded,
+                    route: AppRoutes.PRODUCTS,
+                  ),
+                  HomePageButton(
+                    title: 'Estoque',
+                    icon: Icons.inventory_2_rounded,
+                    route: AppRoutes.STOCK,
+                  ),
+                  HomePageButton(
+                    title: 'Vendas',
+                    icon: Icons.shopping_cart_rounded,
+                    route: AppRoutes.SALES,
+                  ),
+                  HomePageButton(
+                    title: 'Relatórios',
+                    icon: Icons.analytics_rounded,
+                    route: AppRoutes.REPORTS,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

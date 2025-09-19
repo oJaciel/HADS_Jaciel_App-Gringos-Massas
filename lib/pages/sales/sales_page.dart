@@ -5,6 +5,9 @@ class SalesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text('Vendas')));
+    return Scaffold(
+      appBar: AppBar(title: Text('Vendas')),
+      body: Center(child: Text('Nada aqui')),
+    );
   }
 }
