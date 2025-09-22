@@ -1,9 +1,23 @@
 import 'package:app_gringos_massas/components/home_page_button.dart';
+import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    Provider.of<ProductProvider>(context, listen: false).loadProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +27,18 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            Image.asset('assets/logo.png', width: MediaQuery.sizeOf(context).width * 0.5,),
-            SizedBox(height: 16,),
+            Image.asset(
+              'assets/logo.png',
+              width: MediaQuery.sizeOf(context).width * 0.5,
+            ),
+            SizedBox(height: 16),
             Expanded(
               child: GridView(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                 ),
-                padding: EdgeInsets.all(4),
-        
+                
+
                 children: [
                   HomePageButton(
                     title: 'Produtos',

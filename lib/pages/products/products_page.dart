@@ -1,35 +1,26 @@
-import 'dart:math';
-
-import 'package:app_gringos_massas/models/product.dart';
+import 'package:app_gringos_massas/components/product_page_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProductsPage extends StatefulWidget {
+class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
 
   @override
-  State<ProductsPage> createState() => _ProductsPageState();
-}
-
-class _ProductsPageState extends State<ProductsPage> {
-  @override
   Widget build(BuildContext context) {
-    Product product = Product(
-      name: 'Teste',
-      imageUrl: '',
-      price: 10,
-      id: Random().nextDouble().toString(),
-    );
-
+    final provider = Provider.of<ProductProvider>(context);
     return Scaffold(
       appBar: AppBar(title: Text('Produtos')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Provider.of<ProductProvider>(context, listen: false).addProduct(product);
-          },
-          child: Text('Teste'),
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(8),
+        child: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3/2
+          ),
+          padding: EdgeInsets.all(4),
+          itemCount: provider.productsCount,
+          itemBuilder: (ctx, i) => ProductPageItem(provider.products[i]),
         ),
       ),
     );
