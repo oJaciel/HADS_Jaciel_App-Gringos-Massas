@@ -12,13 +12,9 @@ class ProductsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Produtos')),
       body: Padding(
-        padding: EdgeInsetsGeometry.all(8),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3/2
-          ),
-          padding: EdgeInsets.all(4),
+        padding: EdgeInsetsGeometry.symmetric(horizontal: 4, vertical: 8),
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(vertical: 4),
           itemCount: provider.productsCount,
           itemBuilder: (ctx, i) => ProductPageItem(provider.products[i]),
         ),
