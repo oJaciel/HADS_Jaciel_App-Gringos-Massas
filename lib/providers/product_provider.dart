@@ -16,28 +16,27 @@ class ProductProvider with ChangeNotifier {
 
   //Carregando os produtos do Firebase
   Future<void> loadProducts() async {
-  _products.clear();
-  final response = await http.get(
-    Uri.parse('${Constants.PRODUCT_BASE_URL}.json'),
-  );
-
-  if (response.body == 'null') return;
-
-  Map<String, dynamic> data = jsonDecode(response.body);
-  data.forEach((productId, productData) {
-    _products.add(
-      Product(
-        id: productId,
-        name: productData['name'],
-        imageUrl: productData['imageUrl'],
-        price: (productData['price'] as num).toDouble(),
-        isActive: productData['isActive'] ?? true,
-      ),
+    _products.clear();
+    final response = await http.get(
+      Uri.parse('${Constants.PRODUCT_BASE_URL}.json'),
     );
-  });
-  notifyListeners();
-}
 
+    if (response.body == 'null') return;
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+    data.forEach((productId, productData) {
+      _products.add(
+        Product(
+          id: productId,
+          name: productData['name'],
+          imageUrl: productData['imageUrl'],
+          price: (productData['price'] as num).toDouble(),
+          isActive: productData['isActive'] ?? true,
+        ),
+      );
+    });
+    notifyListeners();
+  }
 
   Future<void> addProduct(Product product) async {
     final response = await http.post(
@@ -61,5 +60,27 @@ class ProductProvider with ChangeNotifier {
       ),
     );
     notifyListeners();
+  }
+
+  void removeProduct(Product product) async {
+    int index = _products.indexWhere((p) => p.id == product.id);
+
+    if (index >= 0) {
+      final product = _products[index];
+      //Exclui produto da lista local
+      _products.remove(product);
+      notifyListeners();
+
+      //Exclui produto do banco
+      final response = await http.delete(
+        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+      );
+
+      //Caso der erro na exclusão do banco, insere de volta o produto
+      if (response.statusCode >= 400) {
+        _products.insert(index, product);
+        notifyListeners();
+      }
+    }
   }
 }

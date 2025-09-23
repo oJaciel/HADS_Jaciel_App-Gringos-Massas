@@ -11,7 +11,16 @@ class ProductsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<ProductProvider>(context);
     return Scaffold(
-      appBar: AppBar(title: Text('Produtos')),
+      appBar: AppBar(
+        title: Text('Produtos'),
+        actions: [
+          IconButton(
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM),
+            icon: Icon(Icons.add_rounded),
+          ),
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         child: Column(
@@ -23,7 +32,7 @@ class ProductsPage extends StatelessWidget {
                 onPressed: () =>
                     Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM),
                 label: Text('Adicionar Novo Produto'),
-                icon: Icon(Icons.add),
+                icon: Icon(Icons.add_rounded),
               ),
             ),
             SizedBox(height: 6),

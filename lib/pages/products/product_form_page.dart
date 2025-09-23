@@ -37,7 +37,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Formulário de Produto')),
+      appBar: AppBar(title: Text('Formulário de Produto'), actions: [IconButton(onPressed: _submitForm, icon: Icon(Icons.save),)],),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SafeArea(
@@ -85,7 +85,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 ),
                 SizedBox(height: 8),
                 Spacer(),
-                ElevatedButton(onPressed: _submitForm, child: Text('Salvar')),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: _submitForm,
+                    label: Text('Salvar'),
+                    icon: Icon(Icons.save),
+                  ),
+                ),
               ],
             ),
           ),

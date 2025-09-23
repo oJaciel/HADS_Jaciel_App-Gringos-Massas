@@ -1,5 +1,8 @@
+import 'package:app_gringos_massas/components/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/product.dart';
+import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductPageItem extends StatelessWidget {
   const ProductPageItem(this.product, {super.key});
@@ -85,7 +88,17 @@ class ProductPageItem extends StatelessWidget {
             ),
             //if (produto já tem venda, não pode excluir)
             IconButton(
-              onPressed: () {},
+              onPressed: () => showDialog(
+                context: context,
+                builder: (context) => DeleteAlertDialog(
+                  title: 'Deseja excluir o produto?',
+                  content: 'Excluir Produto',
+                  deleteMethod: () => Provider.of<ProductProvider>(
+                    context,
+                    listen: false,
+                  ).removeProduct(product),
+                ),
+              ),
               icon: Icon(Icons.delete_rounded, color: Colors.red),
               iconSize: 30,
             ),
