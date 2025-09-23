@@ -1,5 +1,6 @@
 import 'package:app_gringos_massas/components/product_page_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +13,28 @@ class ProductsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Produtos')),
       body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(horizontal: 4, vertical: 8),
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 4),
-          itemCount: provider.productsCount,
-          itemBuilder: (ctx, i) => ProductPageItem(provider.products[i]),
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM),
+                label: Text('Adicionar Novo Produto'),
+                icon: Icon(Icons.add),
+              ),
+            ),
+            SizedBox(height: 6),
+            Flexible(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                itemCount: provider.productsCount,
+                itemBuilder: (ctx, i) => ProductPageItem(provider.products[i]),
+              ),
+            ),
+          ],
         ),
       ),
     );

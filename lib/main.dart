@@ -1,4 +1,5 @@
 import 'package:app_gringos_massas/pages/home_page.dart';
+import 'package:app_gringos_massas/pages/products/product_form_page.dart';
 import 'package:app_gringos_massas/pages/products/products_page.dart';
 import 'package:app_gringos_massas/pages/reports/reports_page.dart';
 import 'package:app_gringos_massas/pages/sales/sales_page.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.HOME: (ctx) => HomePage(),
           AppRoutes.PRODUCTS: (ctx) => ProductsPage(),
+          AppRoutes.PRODUCT_FORM: (ctx) => ProductFormPage(),
           AppRoutes.SALES: (ctx) => SalesPage(),
           AppRoutes.STOCK: (ctx) => StockPage(),
           AppRoutes.REPORTS: (ctx) => ReportsPage(),
