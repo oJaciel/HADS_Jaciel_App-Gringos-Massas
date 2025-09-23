@@ -1,6 +1,7 @@
 import 'package:app_gringos_massas/components/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -82,7 +83,11 @@ class ProductPageItem extends StatelessWidget {
             Spacer(),
 
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(
+                  context,
+                ).pushNamed(AppRoutes.PRODUCT_FORM, arguments: product);
+              },
               icon: Icon(Icons.edit_rounded, color: Colors.grey[700]),
               iconSize: 30,
             ),

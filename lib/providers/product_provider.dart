@@ -62,6 +62,25 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateProduct(Product product) async {
+    int index = _products.indexWhere((p) => p.id == product.id);
+
+    if (index >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+        body: jsonEncode({
+          "name": product.name,
+          "imageUrl": product.imageUrl,
+          "price": product.price,
+          "isActive": product.isActive,
+        }),
+      );
+
+      _products[index] = product;
+      notifyListeners();
+    }
+  }
+
   void removeProduct(Product product) async {
     int index = _products.indexWhere((p) => p.id == product.id);
 

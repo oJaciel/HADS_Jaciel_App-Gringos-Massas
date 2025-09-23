@@ -13,31 +13,61 @@ class ProductFormPage extends StatefulWidget {
 }
 
 class _ProductFormPageState extends State<ProductFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
+  bool _activeController = true;
+
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+
+    if (args != null) {
+      final product = args as Product;
+
+      setState(() {
+        _nameController.text = product.name;
+        _priceController.text = product.price.toString();
+        _imageController.text = product.imageUrl;
+        _activeController = product.isActive;
+      });
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _priceController = TextEditingController();
-    final TextEditingController _imageController = TextEditingController();
-    final bool? _activeController;
+    final provider = Provider.of<ProductProvider>(context, listen: false);
 
     void _submitForm() {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final existingProduct = args as Product?;
+
       if (_formKey.currentState!.validate()) ;
 
       Product product = Product(
-        id: Random().nextDouble().toString(),
+        id: existingProduct?.id ?? Random().nextDouble().toString(),
         name: _nameController.text,
         imageUrl: _imageController.text,
         price: double.parse(_priceController.text),
+        isActive: _activeController,
       );
 
-      Provider.of<ProductProvider>(context, listen: false).addProduct(product);
+      if (existingProduct != null) {
+        provider.updateProduct(product);
+      } else {
+        provider.addProduct(product);
+      }
 
       Navigator.of(context).pop();
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Formulário de Produto'), actions: [IconButton(onPressed: _submitForm, icon: Icon(Icons.save),)],),
+      appBar: AppBar(
+        title: Text('Formulário de Produto'),
+        actions: [IconButton(onPressed: _submitForm, icon: Icon(Icons.save))],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SafeArea(
@@ -84,6 +114,40 @@ class _ProductFormPageState extends State<ProductFormPage> {
                   keyboardType: TextInputType.numberWithOptions(),
                 ),
                 SizedBox(height: 8),
+
+                if (ModalRoute.of(context)?.settings.arguments != null)
+                  Column(
+                    children: [
+                      Text(
+                        'Ativo / Inativo',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Switch(
+                        value: _activeController,
+                        onChanged: (bool v) {
+                          setState(() {
+                            _activeController = v;
+                          });
+                        },
+                        inactiveThumbColor: Colors.white,
+                        inactiveTrackColor: Colors.red,
+
+                        thumbIcon: WidgetStateProperty.resolveWith<Icon?>((
+                          Set<WidgetState> states,
+                        ) {
+                          if (states.contains(WidgetState.selected)) {
+                            return const Icon(Icons.check);
+                          } else {
+                            return const Icon(Icons.close, color: Colors.red);
+                          }
+                        }),
+                      ),
+                    ],
+                  ),
+
                 Spacer(),
                 SizedBox(
                   width: double.infinity,
