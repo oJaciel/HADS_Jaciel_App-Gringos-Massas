@@ -1,4 +1,5 @@
 import 'package:app_gringos_massas/components/delete_alert_dialog.dart';
+import 'package:app_gringos_massas/components/product_image.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
@@ -21,22 +22,7 @@ class ProductPageItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                height: 70,
-                width: 60,
-                product.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (ctx, error, stack) => Container(
-                  height: 70,
-                  width: 60,
-                  color: Colors.grey,
-                  child: Icon(
-                    Icons.no_photography_rounded,
-                    size: 30,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ),
+              child: ProductImage(product: product, height: 70, width: 60,)
             ),
             SizedBox(width: 8),
             Column(
