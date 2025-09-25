@@ -31,7 +31,9 @@ class ProductProvider with ChangeNotifier {
           name: productData['name'],
           imageUrl: productData['imageUrl'],
           price: (productData['price'] as num).toDouble(),
+          stockQuantity: productData['stockQuantity'] ?? 0,
           isActive: productData['isActive'] ?? true,
+          hasMovement: productData['hasMovement'] ?? false,
         ),
       );
     });
@@ -46,6 +48,8 @@ class ProductProvider with ChangeNotifier {
         "imageUrl": product.imageUrl,
         "price": product.price,
         "isActive": product.isActive,
+        "stockQuantity": product.stockQuantity,
+        "hasMovement": product.hasMovement,
       }),
     );
 
@@ -57,6 +61,9 @@ class ProductProvider with ChangeNotifier {
         name: product.name,
         imageUrl: product.imageUrl,
         price: product.price,
+        stockQuantity: product.stockQuantity,
+        hasMovement: product.hasMovement,
+        isActive: product.isActive,
       ),
     );
     notifyListeners();
@@ -73,6 +80,8 @@ class ProductProvider with ChangeNotifier {
           "imageUrl": product.imageUrl,
           "price": product.price,
           "isActive": product.isActive,
+          "stockQuantity": product.stockQuantity,
+          "hasMovement": product.hasMovement,
         }),
       );
 
