@@ -1,3 +1,4 @@
+import 'package:app_gringos_massas/components/app_drawer.dart';
 import 'package:app_gringos_massas/components/home_page_button.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Gringo\'s Massas')),
+      drawer: AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(

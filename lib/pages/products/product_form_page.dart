@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +61,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         provider.addProduct(product);
       }
 
-      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacementNamed(AppRoutes.PRODUCTS);
     }
 
     return Scaffold(
