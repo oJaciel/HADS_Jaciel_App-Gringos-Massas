@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_gringos_massas/components/error_dialog.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/models/stock_transaction.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
@@ -18,11 +19,30 @@ class StockProvider with ChangeNotifier {
 
   /// Adiciona uma transação de estoque (entrada ou saída)
   Future<void> addTransaction(
+    BuildContext context,
     ProductProvider productProvider,
     Product product,
     int quantity,
     TransactionType type,
   ) async {
+    // Calcula a nova quantidade de estoque do produto
+    int updatedStockQuantity = product.stockQuantity;
+    if (type == TransactionType.entry) {
+      updatedStockQuantity += quantity;
+    } else if (type == TransactionType.out) {
+      updatedStockQuantity -= quantity;
+    }
+
+    //Se a nova quantidade em estoque causar negativo, cancela
+    if (updatedStockQuantity < 0) {
+      showDialog(
+        context: context,
+        builder: (ctx) =>
+            ErrorDialog(content: 'Saída não pode causar estoque negativo!'),
+      );
+      return;
+    }
+
     //Adiciona a nova transação no banco
     final response = await http.post(
       Uri.parse('${Constants.STOCK_BASE_URL}.json'),
@@ -61,15 +81,11 @@ class StockProvider with ChangeNotifier {
 
     notifyListeners();
 
-    // Calcula a nova quantidade de estoque do produto
-    int updatedStockQuantity = product.stockQuantity;
-    if (type == TransactionType.entry) {
-      updatedStockQuantity += quantity;
-    } else if (type == TransactionType.out) {
-      updatedStockQuantity -= quantity;
-    }
-
     // Chama o método de atualizar o estoque do produto
     await productProvider.updateProductStock(product, updatedStockQuantity);
+
+    await productProvider.loadProducts();
+
+    Navigator.of(context).pop();
   }
 }

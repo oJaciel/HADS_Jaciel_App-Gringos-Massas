@@ -1,3 +1,5 @@
+import 'package:app_gringos_massas/components/product_image.dart';
+import 'package:app_gringos_massas/components/stock_page_item.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
@@ -12,6 +14,8 @@ class StockTransactionFormPage extends StatefulWidget {
 }
 
 class _StockTransactionState extends State<StockTransactionFormPage> {
+  bool _isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
   final _quantityController = TextEditingController();
   Product? _selectedProduct;
@@ -22,7 +26,11 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
     super.dispose();
   }
 
-  void _submitForm(TransactionType transactionType) {
+  Future<void> _submitForm(TransactionType transactionType) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     // Validações do formulário
     if (!_formKey.currentState!.validate()) return;
 
@@ -30,14 +38,17 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
 
     final productProvider = context.read<ProductProvider>();
 
-    context.read<StockProvider>().addTransaction(
+    await context.read<StockProvider>().addTransaction(
+      context,
       productProvider,
       _selectedProduct!,
       qty!,
       transactionType,
     );
 
-    Navigator.of(context).pop();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -45,67 +56,120 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
     final transactionType =
         ModalRoute.of(context)!.settings.arguments as TransactionType;
 
-    final productList = context.watch<ProductProvider>().products;
+    final productList = context.watch<ProductProvider>().activeProducts;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transação de Estoque')),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                transactionType == TransactionType.entry
-                    ? 'Nova Transação de Entrada'
-                    : 'Nova Transação de Saída',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<Product>(
-                decoration: const InputDecoration(labelText: 'Produto'),
-                value: _selectedProduct,
-                items: productList.map((product) {
-                  return DropdownMenuItem<Product>(
-                    value: product,
-                    child: Text(product.name),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedProduct = value;
-                  });
-                },
-                validator: (value) =>
-                    value == null ? 'Selecione um produto' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _quantityController,
-                decoration: const InputDecoration(
-                  labelText: 'Quantidade',
-                  hintText: 'Informe a quantidade',
+      appBar: AppBar(
+        title: Text(
+          transactionType == TransactionType.entry
+              ? 'Transação de Entrada'
+              : 'Transação de Saída',
+        ),
+      ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nome do produto',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+
+                    SizedBox(height: 4),
+                    DropdownButtonFormField<Product>(
+                      decoration: const InputDecoration(
+                        hintText: 'Selecione um produto',
+                      ),
+                      
+                      items: productList.map((product) {
+                        return DropdownMenuItem<Product>(
+                          value: product,
+                          child: Row(
+                            children: [
+                              ProductImage(product: product),
+                              SizedBox(width: 12),
+                              Text(product.name),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedProduct = value;
+                        });
+                      },
+                      validator: (value) =>
+                          value == null ? 'Selecione um produto' : null,
+                    ),
+                    if (_selectedProduct != null)
+                      Column(
+                        children: [
+                          SizedBox(height: 10),
+
+                          StockPageItem(_selectedProduct!),
+                        ],
+                      ),
+
+                    const SizedBox(height: 16),
+                    Text(
+                      'Quantidade',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    TextFormField(
+                      controller: _quantityController,
+                      decoration: InputDecoration(
+                        hint: Text('Informe a quantidade'),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Informe a quantidade';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Digite um número válido';
+                        }
+                        if (int.tryParse(value)! <= 0) {
+                          return 'Informe uma quantidade válida';
+                        }
+                        return null;
+                      },
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () => _submitForm(transactionType),
+                        icon: const Icon(Icons.save),
+                        label: const Text('Salvar'),
+                      ),
+                    ),
+                  ],
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Informe a quantidade';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Digite um número válido';
-                  }
-                  return null;
-                },
               ),
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () => _submitForm(transactionType),
-                icon: const Icon(Icons.save),
-                label: const Text('Salvar'),
+            ),
+            if (_isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );

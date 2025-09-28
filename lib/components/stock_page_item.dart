@@ -10,10 +10,12 @@ class StockPageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (product.isActive) {
-      return ListTile(
-        leading: ProductImage(product: product, height: 70, width: 60),
-        title: Text(product.name),
-        subtitle: Text('Em estoque: ${product.stockQuantity}'),
+      return Card(
+        child: ListTile(
+          leading: ProductImage(product: product, height: 70, width: 60),
+          title: Text(product.name),
+          subtitle: Text('Em estoque: ${product.stockQuantity}'),
+        ),
       );
     } else {
       return SizedBox();

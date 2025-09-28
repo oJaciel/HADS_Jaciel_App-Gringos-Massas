@@ -14,6 +14,12 @@ class ProductProvider with ChangeNotifier {
     return _products.length;
   }
 
+  List<Product> get activeProducts => [..._products.where((p) => p.isActive)];
+
+  int get activeProductsCount {
+    return activeProducts.length;
+  }
+
   //Carregando os produtos do Firebase
   Future<void> loadProducts() async {
     _products.clear();

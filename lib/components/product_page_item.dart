@@ -22,18 +22,18 @@ class ProductPageItem extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: ProductImage(product: product, height: 70, width: 60,)
+              child: ProductImage(product: product, height: 90, width: 80),
             ),
             SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${product.name}',
+                  product.name,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 SizedBox(height: 4),
-                Text('R\$ ${product.price.toStringAsFixed(2)}'),
+                Text('Valor: R\$ ${product.price.toStringAsFixed(2)}'),
                 SizedBox(height: 4),
                 Stack(
                   children: [
@@ -77,22 +77,22 @@ class ProductPageItem extends StatelessWidget {
               icon: Icon(Icons.edit_rounded, color: Colors.grey[700]),
               iconSize: 30,
             ),
-            //if (produto já tem venda, não pode excluir)
-            IconButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => DeleteAlertDialog(
-                  title: 'Deseja excluir o produto?',
-                  content: 'Excluir Produto',
-                  deleteMethod: () => Provider.of<ProductProvider>(
-                    context,
-                    listen: false,
-                  ).removeProduct(product),
+            if (product.hasMovement == false)
+              IconButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => DeleteAlertDialog(
+                    title: 'Deseja excluir o produto?',
+                    content: 'Excluir Produto',
+                    deleteMethod: () => Provider.of<ProductProvider>(
+                      context,
+                      listen: false,
+                    ).removeProduct(product),
+                  ),
                 ),
+                icon: Icon(Icons.delete_rounded, color: Colors.red),
+                iconSize: 30,
               ),
-              icon: Icon(Icons.delete_rounded, color: Colors.red),
-              iconSize: 30,
-            ),
           ],
         ),
       ),

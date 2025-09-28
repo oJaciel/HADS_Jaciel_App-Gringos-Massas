@@ -13,11 +13,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool _isLoading = false;
+
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
 
-    Provider.of<ProductProvider>(context, listen: false).loadProducts();
+  Future<void> _loadData() async {
+    setState(() => _isLoading = true);
+
+    await Provider.of<ProductProvider>(context, listen: false).loadProducts();
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -25,47 +36,58 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('Gringo\'s Massas')),
       drawer: AppDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          children: [
-            Image.asset(
-              'assets/logo.png',
-              width: MediaQuery.sizeOf(context).width * 0.5,
-            ),
-            SizedBox(height: 16),
-            Expanded(
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  width: MediaQuery.sizeOf(context).width * 0.5,
                 ),
+                SizedBox(height: 16),
+                Expanded(
+                  child: GridView(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
 
-                children: [
-                  HomePageButton(
-                    title: 'Produtos',
-                    icon: Icons.sell_rounded,
-                    route: AppRoutes.PRODUCTS,
+                    children: [
+                      HomePageButton(
+                        title: 'Produtos',
+                        icon: Icons.sell_rounded,
+                        route: AppRoutes.PRODUCTS,
+                      ),
+                      HomePageButton(
+                        title: 'Estoque',
+                        icon: Icons.inventory_2_rounded,
+                        route: AppRoutes.STOCK,
+                      ),
+                      HomePageButton(
+                        title: 'Vendas',
+                        icon: Icons.shopping_cart_rounded,
+                        route: AppRoutes.SALES,
+                      ),
+                      HomePageButton(
+                        title: 'Relatórios',
+                        icon: Icons.analytics_rounded,
+                        route: AppRoutes.REPORTS,
+                      ),
+                    ],
                   ),
-                  HomePageButton(
-                    title: 'Estoque',
-                    icon: Icons.inventory_2_rounded,
-                    route: AppRoutes.STOCK,
-                  ),
-                  HomePageButton(
-                    title: 'Vendas',
-                    icon: Icons.shopping_cart_rounded,
-                    route: AppRoutes.SALES,
-                  ),
-                  HomePageButton(
-                    title: 'Relatórios',
-                    icon: Icons.analytics_rounded,
-                    route: AppRoutes.REPORTS,
-                  ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          if (_isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                child: const Center(child: CircularProgressIndicator()),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

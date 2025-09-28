@@ -2,7 +2,12 @@ import 'package:app_gringos_massas/models/product.dart';
 import 'package:flutter/material.dart';
 
 class ProductImage extends StatelessWidget {
-  const ProductImage({super.key,  required this.product, required this.height, required this.width});
+  const ProductImage({
+    super.key,
+    required this.product,
+    this.height = 30,
+    this.width = 30,
+  });
 
   final Product product;
   final double height;
@@ -16,12 +21,12 @@ class ProductImage extends StatelessWidget {
       product.imageUrl,
       fit: BoxFit.cover,
       errorBuilder: (ctx, error, stack) => Container(
-        height: 70,
-        width: 60,
+        height: height,
+        width: width,
         color: Colors.grey,
         child: Icon(
           Icons.no_photography_rounded,
-          size: 30,
+          size: height / 2,
           color: Colors.grey[800],
         ),
       ),
