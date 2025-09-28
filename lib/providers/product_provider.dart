@@ -90,6 +90,23 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
+  Future<void> updateProductStock(Product product, int quantity) async {
+    int index = _products.indexWhere((p) => p.id == product.id);
+
+    if (index >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+        body: jsonEncode({
+          "stockQuantity": quantity,
+          //Se produto já teve movimentação antes, não precisa atualizar
+          if (product.hasMovement == false) "hasMovement": true,
+        }),
+      );
+
+      notifyListeners();
+    }
+  }
+
   void removeProduct(Product product) async {
     int index = _products.indexWhere((p) => p.id == product.id);
 

@@ -1,5 +1,7 @@
 import 'package:app_gringos_massas/components/stock_page_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/providers/stock_provider.dart';
+import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +21,23 @@ class StockPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      AppRoutes.STOCK_TRANSACTION_FORM,
+                      arguments: TransactionType.entry,
+                    );
+                  },
                   label: Text('Nova Entrada'),
                   icon: Icon(Icons.arrow_upward_outlined),
                 ),
                 SizedBox(width: 8),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                      AppRoutes.STOCK_TRANSACTION_FORM,
+                      arguments: TransactionType.out,
+                    );
+                  },
                   label: Text('Nova Saída'),
                   icon: Icon(Icons.arrow_downward_outlined),
                 ),

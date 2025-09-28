@@ -4,7 +4,9 @@ import 'package:app_gringos_massas/pages/products/products_page.dart';
 import 'package:app_gringos_massas/pages/reports/reports_page.dart';
 import 'package:app_gringos_massas/pages/sales/sales_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_page.dart';
+import 'package:app_gringos_massas/pages/stock/stock_transaction_form_page.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:app_gringos_massas/utils/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +21,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => ProductProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => StockProvider()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'App Gringo\'s Massas',
@@ -31,6 +36,7 @@ class MyApp extends StatelessWidget {
           AppRoutes.PRODUCT_FORM: (ctx) => ProductFormPage(),
           AppRoutes.SALES: (ctx) => SalesPage(),
           AppRoutes.STOCK: (ctx) => StockPage(),
+          AppRoutes.STOCK_TRANSACTION_FORM: (ctx) => StockTransactionFormPage(),
           AppRoutes.REPORTS: (ctx) => ReportsPage(),
         },
       ),
