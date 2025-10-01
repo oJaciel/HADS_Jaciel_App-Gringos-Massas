@@ -17,6 +17,43 @@ class StockProvider with ChangeNotifier {
 
   int get transactionsCount => _transactions.length;
 
+  Future<void> loadTransactions() async {
+    _transactions.clear();
+    final response = await http.get(
+      Uri.parse('${Constants.STOCK_BASE_URL}.json'),
+    );
+    if (response.body == 'null') return;
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+
+    data.forEach((transactionId, transactionData) {
+      _transactions.add(
+        StockTransaction(
+          id: transactionId,
+          product: Product(
+            id: transactionData['product']['id'] ?? '',
+            name: transactionData['product']['name'] ?? '',
+            imageUrl: transactionData['product']['imageUrl'] ?? '',
+            price: (transactionData['product']['price'] as num).toDouble(),
+            stockQuantity: transactionData['product']['stockQuantity'] ?? 0,
+            isActive: transactionData['product']['isActive'] ?? true,
+            hasMovement: transactionData['product']['hasMovement'] ?? false,
+          ),
+          quantity: transactionData['quantity'],
+          type: transactionData['transactionType'] == 'entry'
+              ? TransactionType.entry
+              : TransactionType.out,
+          date: DateTime.parse(transactionData['date']),
+        ),
+      );
+    });
+
+    // Ordena a lista por data decrescente
+    _transactions.sort((a, b) => b.date.compareTo(a.date));
+
+    notifyListeners();
+  }
+
   /// Adiciona uma transação de estoque (entrada ou saída)
   Future<void> addTransaction(
     BuildContext context,
@@ -78,6 +115,9 @@ class StockProvider with ChangeNotifier {
         date: DateTime.now(),
       ),
     );
+
+    // Ordena a lista por data decrescente
+    _transactions.sort((a, b) => b.date.compareTo(a.date));
 
     notifyListeners();
 

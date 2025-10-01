@@ -1,6 +1,7 @@
 import 'package:app_gringos_massas/components/app_drawer.dart';
 import 'package:app_gringos_massas/components/home_page_button.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
     setState(() => _isLoading = true);
 
     await Provider.of<ProductProvider>(context, listen: false).loadProducts();
+    await Provider.of<StockProvider>(context, listen: false).loadTransactions();
 
     if (mounted) {
       setState(() => _isLoading = false);
