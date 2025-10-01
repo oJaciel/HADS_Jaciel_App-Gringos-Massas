@@ -1,5 +1,6 @@
 import 'package:app_gringos_massas/components/app_drawer.dart';
 import 'package:app_gringos_massas/components/home_page_button.dart';
+import 'package:app_gringos_massas/components/select_stock_module_dialog.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
@@ -59,22 +60,30 @@ class _HomePageState extends State<HomePage> {
                       HomePageButton(
                         title: 'Produtos',
                         icon: Icons.sell_rounded,
-                        route: AppRoutes.PRODUCTS,
+                        onTap: () =>
+                            Navigator.of(context).pushNamed(AppRoutes.PRODUCTS),
                       ),
                       HomePageButton(
                         title: 'Estoque',
                         icon: Icons.inventory_2_rounded,
-                        route: AppRoutes.STOCK,
+                        onTap: () => showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SelectStockModuleDialog();
+                          },
+                        ),
                       ),
                       HomePageButton(
                         title: 'Vendas',
                         icon: Icons.shopping_cart_rounded,
-                        route: AppRoutes.SALES,
+                        onTap: () =>
+                            Navigator.of(context).pushNamed(AppRoutes.SALES),
                       ),
                       HomePageButton(
                         title: 'Relatórios',
                         icon: Icons.analytics_rounded,
-                        route: AppRoutes.REPORTS,
+                        onTap: () =>
+                            Navigator.of(context).pushNamed(AppRoutes.REPORTS),
                       ),
                     ],
                   ),

@@ -39,9 +39,14 @@ class AppDrawer extends StatelessWidget {
                     ],
                   ),
                   ListTile(
-                    leading: Icon(Icons.list_rounded, color: colorScheme.primary),
-                    title: Text('Gerenciar Produtos',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    leading: Icon(
+                      Icons.list_rounded,
+                      color: colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Gerenciar Produtos',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed(AppRoutes.PRODUCTS);
@@ -49,8 +54,10 @@ class AppDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(Icons.add, color: colorScheme.primary),
-                    title: Text('Novo Produto',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    title: Text(
+                      'Novo Produto',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM);
@@ -60,7 +67,10 @@ class AppDrawer extends StatelessWidget {
                   SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.shopping_cart_rounded, color: colorScheme.primary),
+                      Icon(
+                        Icons.shopping_cart_rounded,
+                        color: colorScheme.primary,
+                      ),
                       SizedBox(width: 6),
                       Text(
                         'Vendas',
@@ -73,27 +83,38 @@ class AppDrawer extends StatelessWidget {
                     ],
                   ),
                   ListTile(
-                    leading: Icon(Icons.receipt_long_rounded,
-                        color: colorScheme.primary),
-                    title: Text('Gerenciar Vendas',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    leading: Icon(
+                      Icons.receipt_long_rounded,
+                      color: colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Gerenciar Vendas',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed(AppRoutes.SALES);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.add_shopping_cart_rounded,
-                        color: colorScheme.primary),
-                    title: Text('Nova Venda',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    leading: Icon(
+                      Icons.add_shopping_cart_rounded,
+                      color: colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Nova Venda',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {},
                   ),
                   Divider(color: colorScheme.primary),
                   SizedBox(height: 4),
                   Row(
                     children: [
-                      Icon(Icons.inventory_2_rounded, color: colorScheme.primary),
+                      Icon(
+                        Icons.inventory_2_rounded,
+                        color: colorScheme.primary,
+                      ),
                       SizedBox(width: 6),
                       Text(
                         'Estoque',
@@ -107,19 +128,27 @@ class AppDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(Icons.shelves, color: colorScheme.primary),
-                    title: Text('Saldos em Estoque',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    title: Text(
+                      'Saldos em Estoque',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed(AppRoutes.STOCK);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.swap_vert_rounded,
-                        color: colorScheme.primary),
-                    title: Text('Nova Transação de Estoque',
-                        style: TextStyle(color: colorScheme.onSurface)),
-                    onTap: () {},
+                    leading: Icon(
+                      Icons.swap_vert_rounded,
+                      color: colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Transações de Estoque',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
+                    onTap: () => Navigator.of(
+                      context,
+                    ).pushNamed(AppRoutes.STOCK_TRANSACTION),
                   ),
                   Divider(color: colorScheme.primary),
                   SizedBox(height: 4),
@@ -138,10 +167,14 @@ class AppDrawer extends StatelessWidget {
                     ],
                   ),
                   ListTile(
-                    leading: Icon(Icons.add_chart_rounded,
-                        color: colorScheme.primary),
-                    title: Text('Gerar Relatório',
-                        style: TextStyle(color: colorScheme.onSurface)),
+                    leading: Icon(
+                      Icons.add_chart_rounded,
+                      color: colorScheme.primary,
+                    ),
+                    title: Text(
+                      'Gerar Relatório',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
                     onTap: () {
                       Navigator.of(context).pop();
                       Navigator.of(context).pushNamed(AppRoutes.REPORTS);

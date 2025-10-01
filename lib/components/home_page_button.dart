@@ -5,12 +5,12 @@ class HomePageButton extends StatelessWidget {
     super.key,
     required this.title,
     required this.icon,
-    required this.route,
+    required this.onTap,
   });
 
   final String title;
   final IconData icon;
-  final String route;
+  final onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class HomePageButton extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
 
-          onTap: () => Navigator.of(context).pushNamed(route),
+          onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
