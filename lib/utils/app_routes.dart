@@ -3,6 +3,7 @@ class AppRoutes {
   static const PRODUCTS = '/products';
   static const PRODUCT_FORM = '/product-form';
   static const SALES = '/sales';
+  static const SALE_FORM = '/sale-form';
   static const STOCK = '/stock';
   static const STOCK_TRANSACTION = '/stock-transaction';
   static const STOCK_TRANSACTION_FORM = '/stock-transaction-form';

@@ -1,4 +1,4 @@
-import 'package:app_gringos_massas/components/delete_alert_dialog.dart';
+import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/stock_transaction.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';

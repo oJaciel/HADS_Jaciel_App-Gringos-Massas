@@ -105,7 +105,10 @@ class AppDrawer extends StatelessWidget {
                       'Nova Venda',
                       style: TextStyle(color: colorScheme.onSurface),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(AppRoutes.SALE_FORM);
+                    },
                   ),
                   Divider(color: colorScheme.primary),
                   SizedBox(height: 4),
