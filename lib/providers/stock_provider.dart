@@ -62,15 +62,13 @@ class StockProvider with ChangeNotifier {
     int quantity,
     TransactionType type,
   ) async {
-    // Calcula a nova quantidade de estoque do produto
     int updatedStockQuantity = product.stockQuantity;
     if (type == TransactionType.entry) {
       updatedStockQuantity += quantity;
-    } else if (type == TransactionType.out) {
+    } else {
       updatedStockQuantity -= quantity;
     }
 
-    //Se a nova quantidade em estoque causar negativo, cancela
     if (updatedStockQuantity < 0) {
       showDialog(
         context: context,
@@ -80,19 +78,19 @@ class StockProvider with ChangeNotifier {
       return;
     }
 
-    //Adiciona a nova transação no banco
     final response = await http.post(
       Uri.parse('${Constants.STOCK_BASE_URL}.json'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        "product": ({
+        "product": {
+          "id": product.id, // <-- faltava salvar id
           "name": product.name,
           "imageUrl": product.imageUrl,
           "price": product.price,
           "isActive": product.isActive,
           "stockQuantity": product.stockQuantity,
           "hasMovement": product.hasMovement,
-        }),
+        },
         "quantity": quantity,
         "transactionType": type.name,
         "date": DateTime.now().toIso8601String(),
@@ -105,7 +103,6 @@ class StockProvider with ChangeNotifier {
 
     final transactionId = jsonDecode(response.body)['name'];
 
-    //Cria a transação localmente
     _transactions.add(
       StockTransaction(
         id: transactionId,
@@ -116,16 +113,67 @@ class StockProvider with ChangeNotifier {
       ),
     );
 
-    // Ordena a lista por data decrescente
     _transactions.sort((a, b) => b.date.compareTo(a.date));
-
     notifyListeners();
 
-    // Chama o método de atualizar o estoque do produto
     await productProvider.updateProductStock(product, updatedStockQuantity);
-
     await productProvider.loadProducts();
 
     Navigator.of(context).pop();
+  }
+
+  Future<void> removeTransaction(
+    BuildContext context,
+    ProductProvider productProvider,
+    StockTransaction transaction,
+  ) async {
+    final transactionIndex = _transactions.indexWhere(
+      (t) => t.id == transaction.id,
+    );
+    if (transactionIndex < 0) return;
+
+    final productIndex = productProvider.products.indexWhere(
+      (p) => p.id == transaction.product.id,
+    );
+    if (productIndex < 0) return;
+
+    final transactionProduct = productProvider.products[productIndex];
+
+    // Corrigir cálculo de estoque
+    int updatedStockQuantity = transactionProduct.stockQuantity;
+    if (transaction.type == TransactionType.entry) {
+      updatedStockQuantity -= transaction.quantity;
+    } else {
+      updatedStockQuantity += transaction.quantity;
+    }
+
+    if (updatedStockQuantity < 0) {
+      showDialog(
+        context: context,
+        builder: (ctx) =>
+            ErrorDialog(content: 'Saída não pode causar estoque negativo!'),
+      );
+      return;
+    }
+
+    print('Excluindo transação: ${transaction.id}');
+    final response = await http.delete(
+      Uri.parse('${Constants.STOCK_BASE_URL}/${transaction.id}.json'),
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception('Erro ao excluir transação: ${response.body}');
+    }
+
+    // Só remove localmente se o backend excluiu com sucesso
+    _transactions.removeAt(transactionIndex);
+    notifyListeners();
+
+    await productProvider.updateProductStock(
+      transactionProduct,
+      updatedStockQuantity,
+    );
+
+    await productProvider.loadProducts();
   }
 }

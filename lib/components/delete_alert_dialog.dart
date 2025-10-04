@@ -15,9 +15,9 @@ class DeleteAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Text(title),
+      content: Text(content),
       title: Row(
-        children: [Icon(Icons.delete), SizedBox(width: 8), Text(content)],
+        children: [Icon(Icons.delete), SizedBox(width: 8), Text(title)],
       ),
       actions: [
         TextButton(
