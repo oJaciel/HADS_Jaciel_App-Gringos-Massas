@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app_gringos_massas/components/error_dialog.dart';
+import 'package:app_gringos_massas/components/dialogs/error_dialog.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/models/stock_transaction.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';

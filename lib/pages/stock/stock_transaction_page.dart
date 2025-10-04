@@ -1,5 +1,5 @@
-import 'package:app_gringos_massas/components/date_divider.dart';
-import 'package:app_gringos_massas/components/stock_transaction_item.dart';
+import 'package:app_gringos_massas/components/common/date_divider.dart';
+import 'package:app_gringos_massas/components/stock/stock_transaction_item.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';

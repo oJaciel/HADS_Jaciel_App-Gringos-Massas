@@ -1,5 +1,5 @@
-import 'package:app_gringos_massas/components/product_image.dart';
-import 'package:app_gringos_massas/components/stock_page_item.dart';
+import 'package:app_gringos_massas/components/common/product_image.dart';
+import 'package:app_gringos_massas/components/stock/stock_page_item.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';

@@ -1,4 +1,4 @@
-import 'package:app_gringos_massas/components/stock_page_item.dart';
+import 'package:app_gringos_massas/components/stock/stock_page_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,5 +1,5 @@
-import 'package:app_gringos_massas/components/delete_alert_dialog.dart';
-import 'package:app_gringos_massas/components/product_image.dart';
+import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
+import 'package:app_gringos_massas/components/common/product_image.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';

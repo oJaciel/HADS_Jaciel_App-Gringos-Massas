@@ -1,6 +1,6 @@
-import 'package:app_gringos_massas/components/app_drawer.dart';
-import 'package:app_gringos_massas/components/home_page_button.dart';
-import 'package:app_gringos_massas/components/select_stock_module_dialog.dart';
+import 'package:app_gringos_massas/components/common/app_drawer.dart';
+import 'package:app_gringos_massas/components/common/home_page_button.dart';
+import 'package:app_gringos_massas/components/dialogs/select_stock_module_dialog.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
