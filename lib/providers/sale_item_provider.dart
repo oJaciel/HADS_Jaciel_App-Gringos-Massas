@@ -22,6 +22,28 @@ class SaleItemProvider with ChangeNotifier {
     return total;
   }
 
+  void removeSingleItem(String productId) {
+    final item = _items[productId];
+    if (item == null) return;
+
+    //Se a quantidade for maior que 1, remove só um da quantidade
+    if (item.quantity > 1) {
+      _items.update(
+        productId,
+        (existingProduct) => SaleItem(
+          productId: existingProduct.productId,
+          name: existingProduct.name,
+          quantity: existingProduct.quantity - 1,
+          unitPrice: existingProduct.unitPrice,
+        ),
+      );
+      //Senão, exclui o item da lista
+    } else {
+      removeItem(productId);
+    }
+    notifyListeners();
+  }
+
   void addItem(Product product) {
     //Primeiro valida se já tem esse produto no carrinho. Se tiver, só adiciona mais um na quantidade.
     if (_items.containsKey(product.id)) {

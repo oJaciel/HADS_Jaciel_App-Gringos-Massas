@@ -20,6 +20,11 @@ class ProductProvider with ChangeNotifier {
     return activeProducts.length;
   }
 
+  Product getProductById(String productId) {
+    final product = products.firstWhere((p) => productId == p.id);
+    return product;
+  }
+
   //Carregando os produtos do Firebase
   Future<void> loadProducts() async {
     _products.clear();
