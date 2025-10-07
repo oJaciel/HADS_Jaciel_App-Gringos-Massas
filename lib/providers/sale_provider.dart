@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:app_gringos_massas/models/sale.dart';
+import 'package:app_gringos_massas/models/sale_item.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 enum PaymentMethod { Cash, Pix, CreditCard }
 
@@ -14,6 +16,45 @@ class SaleProvider with ChangeNotifier {
   List<Sale> get sales => [..._sales];
 
   int get salesCount => _sales.length;
+
+  Future<void> loadSales() async {
+    _sales.clear();
+
+    final response = await http.get(
+      Uri.parse('${Constants.SALE_BASE_URL}.json'),
+    );
+
+    if (response.body == 'null') return;
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+    data.forEach((saleId, saleData) {
+      _sales.add(
+        Sale(
+          id: saleId,
+          total: saleData['total'],
+          date: DateTime.parse(saleData['date']),
+          clientName: saleData['clientName'] ?? '',
+          paymentMethod: saleData['paymentMethod'] == 'Cash'
+              ? PaymentMethod.Cash
+              : saleData['paymentMethod'] == 'Pix'
+              ? PaymentMethod.Pix
+              : PaymentMethod.CreditCard,
+          products: (saleData['products'] as List<dynamic>).map((item) {
+            return SaleItem(
+              productId: item['productId'],
+              name: item['name'],
+              quantity: item['quantity'],
+              unitPrice: item['unitPrice'],
+            );
+          }).toList(),
+        ),
+      );
+    });
+
+    //Ordena a lista por ordem de data
+    _sales.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
+  }
 
   Future<void> addSale(
     SaleItemProvider saleItemProvider,
@@ -43,6 +84,10 @@ class SaleProvider with ChangeNotifier {
       }),
     );
 
+    if (response.statusCode >= 400) {
+      throw Exception('Erro ao gravar transação: ${response.body}');
+    }
+
     final saleId = jsonDecode(response.body)['name'];
 
     _sales.add(
@@ -52,8 +97,12 @@ class SaleProvider with ChangeNotifier {
         total: total,
         clientName: clientName,
         paymentMethod: paymentMethod,
-        date: date.toIso8601String(),
+        date: date,
       ),
     );
+
+    //Ordena a lista por ordem de data
+    _sales.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
   }
 }

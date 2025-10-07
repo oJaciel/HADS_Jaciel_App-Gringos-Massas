@@ -7,7 +7,7 @@ class Sale {
   final double total;
   final String? clientName;
   final PaymentMethod? paymentMethod;
-  final String date;
+  final DateTime date;
 
   Sale({
     required this.id,

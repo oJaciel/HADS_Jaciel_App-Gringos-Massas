@@ -1,11 +1,14 @@
+import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SalesPage extends StatelessWidget {
   const SalesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sales = Provider.of<SaleProvider>(context, listen: false).sales;
     return Scaffold(
       appBar: AppBar(title: Text('Vendas')),
       body: Padding(
@@ -23,7 +26,14 @@ class SalesPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 6),
-            Flexible(child: SizedBox()),
+            Flexible(
+              child: ListView.builder(
+                itemCount: sales.length,
+                itemBuilder: (ctx, i) {
+                  return Text(sales[i].total.toString());
+                },
+              ),
+            ),
           ],
         ),
       ),
