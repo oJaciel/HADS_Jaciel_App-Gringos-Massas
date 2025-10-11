@@ -6,7 +6,6 @@ import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 enum PaymentMethod { Cash, Pix, CreditCard }
 
@@ -101,8 +100,33 @@ class SaleProvider with ChangeNotifier {
       ),
     );
 
+    //Limpa a lista dos itens de venda
+    saleItemProvider.clear();
+
+    loadSales();
+
     //Ordena a lista por ordem de data
     _sales.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
+  }
+
+  getPaymentName(PaymentMethod method) {
+    if (method == PaymentMethod.Cash) {
+      return 'Dinheiro';
+    } else if (method == PaymentMethod.CreditCard) {
+      return 'Cartão de Crédito';
+    } else if (method == PaymentMethod.Pix) {
+      return 'Pix';
+    }
+  }
+
+  getPaymentIcon(PaymentMethod method) {
+    if (method == PaymentMethod.Cash) {
+      return Icons.attach_money_rounded;
+    } else if (method == PaymentMethod.CreditCard) {
+      return Icons.payment_rounded;
+    } else if (method == PaymentMethod.Pix) {
+      return Icons.pix_rounded;
+    }
   }
 }

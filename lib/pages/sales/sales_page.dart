@@ -1,3 +1,5 @@
+import 'package:app_gringos_massas/components/common/date_divider.dart';
+import 'package:app_gringos_massas/components/sales/sale_page_item.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,7 @@ class SalesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sales = Provider.of<SaleProvider>(context, listen: false).sales;
+    final sales = Provider.of<SaleProvider>(context).sales;
     return Scaffold(
       appBar: AppBar(title: Text('Vendas')),
       body: Padding(
@@ -29,8 +31,13 @@ class SalesPage extends StatelessWidget {
             Flexible(
               child: ListView.builder(
                 itemCount: sales.length,
-                itemBuilder: (ctx, i) {
-                  return Text(sales[i].total.toString());
+                itemBuilder: (ctx, index) {
+                  return Column(
+                    children: [
+                      DateDivider(index: index, list: sales),
+                      SalePageItem(sales[index]),
+                    ],
+                  );
                 },
               ),
             ),
