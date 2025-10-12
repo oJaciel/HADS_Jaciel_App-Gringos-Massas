@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/models/sale_item.dart';
+import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 enum PaymentMethod { Cash, Pix, CreditCard }
 
@@ -33,11 +35,11 @@ class SaleProvider with ChangeNotifier {
           total: saleData['total'],
           date: DateTime.parse(saleData['date']),
           clientName: saleData['clientName'] ?? '',
-          paymentMethod: saleData['paymentMethod'] == 'Cash'
-              ? PaymentMethod.Cash
-              : saleData['paymentMethod'] == 'Pix'
-              ? PaymentMethod.Pix
-              : PaymentMethod.CreditCard,
+          paymentMethod: saleData['paymentMethod'] != null
+              ? PaymentMethod.values.firstWhere(
+                  (e) => e.name == saleData['paymentMethod'],
+                )
+              : null,
           products: (saleData['products'] as List<dynamic>).map((item) {
             return SaleItem(
               productId: item['productId'],
@@ -56,12 +58,37 @@ class SaleProvider with ChangeNotifier {
   }
 
   Future<void> addSale(
-    SaleItemProvider saleItemProvider,
-    double total,
+    BuildContext context,
     String? clientName,
     PaymentMethod? paymentMethod,
     DateTime date,
   ) async {
+    final saleItemProvider = Provider.of<SaleItemProvider>(
+      context,
+      listen: false,
+    );
+
+    for (var saleItem in saleItemProvider.items.values) {
+      final productProvider = Provider.of<ProductProvider>(
+        context,
+        listen: false,
+      );
+      final product = productProvider.getProductById(saleItem.productId);
+
+      final updatedStockQuantity = product.stockQuantity - saleItem.quantity;
+
+      bool success = await productProvider.updateProductStock(
+        product,
+        updatedStockQuantity,
+        context,
+      );
+
+      if (!success) {
+        // Interrompe todo o processo se algum produto falhar
+        return;
+      }
+    }
+
     final response = await http.post(
       Uri.parse('${Constants.SALE_BASE_URL}.json'),
       body: jsonEncode({
@@ -75,7 +102,7 @@ class SaleProvider with ChangeNotifier {
               },
             )
             .toList(),
-        "total": total,
+        "total": saleItemProvider.totalAmount,
         if (clientName!.isNotEmpty && clientName != '')
           "clientName": clientName,
         "paymentMethod": paymentMethod?.name,
@@ -93,7 +120,7 @@ class SaleProvider with ChangeNotifier {
       Sale(
         id: saleId,
         products: saleItemProvider.items.values.toList(),
-        total: total,
+        total: saleItemProvider.totalAmount,
         clientName: clientName,
         paymentMethod: paymentMethod,
         date: date,
@@ -102,6 +129,7 @@ class SaleProvider with ChangeNotifier {
 
     //Limpa a lista dos itens de venda
     saleItemProvider.clear();
+    Navigator.of(context).pop();
 
     loadSales();
 

@@ -83,7 +83,7 @@ class StockProvider with ChangeNotifier {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "product": {
-          "id": product.id, // <-- faltava salvar id
+          "id": product.id,
           "name": product.name,
           "imageUrl": product.imageUrl,
           "price": product.price,
@@ -116,7 +116,11 @@ class StockProvider with ChangeNotifier {
     _transactions.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
 
-    await productProvider.updateProductStock(product, updatedStockQuantity);
+    await productProvider.updateProductStock(
+      product,
+      updatedStockQuantity,
+      context,
+    );
     await productProvider.loadProducts();
 
     Navigator.of(context).pop();
@@ -172,6 +176,7 @@ class StockProvider with ChangeNotifier {
     await productProvider.updateProductStock(
       transactionProduct,
       updatedStockQuantity,
+      context,
     );
 
     await productProvider.loadProducts();

@@ -44,7 +44,7 @@ class _SaleItemState extends State<SalePageItem> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (widget.sale.paymentMethod != null ||
+                  if (widget.sale.paymentMethod != null &&
                       widget.sale.paymentMethod.toString() != '')
                     Row(
                       children: [
@@ -132,6 +132,7 @@ class _SaleItemState extends State<SalePageItem> {
                 ? AnimatedContainer(
                     duration: Duration(milliseconds: 300),
                     child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 10, top: 5),
                       shrinkWrap: true,
                       itemCount: widget.sale.products.length,
                       itemBuilder: (ctx, index) {

@@ -58,18 +58,14 @@ class _SaleFormPageState extends State<SaleFormPage> {
       // Validações do formulário
       if (!formKey.currentState!.validate()) return;
 
-      await Provider.of<SaleProvider>(context, listen: false).addSale(
-        Provider.of<SaleItemProvider>(context, listen: false),
-        Provider.of<SaleItemProvider>(context, listen: false).totalAmount,
-        clientController.text,
-        paymentMethod,
-        selectedDate,
-      );
+      await Provider.of<SaleProvider>(
+        context,
+        listen: false,
+      ).addSale(context, clientController.text, paymentMethod, selectedDate);
 
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context).pop();
     }
 
     return Scaffold(
@@ -253,6 +249,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<PaymentMethod>(
+                    initialValue: null,
                     decoration: const InputDecoration(
                       labelText: 'Forma de pagamento',
                       border: OutlineInputBorder(),
@@ -262,14 +259,23 @@ class _SaleFormPageState extends State<SaleFormPage> {
                       ),
                     ),
                     items: PaymentMethod.values.map((method) {
-                      String label = method == PaymentMethod.Cash
-                          ? 'Dinheiro'
-                          : method == PaymentMethod.Pix
-                          ? 'PIX'
-                          : 'Cartão de Crédito';
+                      String label = Provider.of<SaleProvider>(
+                        context,
+                        listen: false,
+                      ).getPaymentName(method);
+                      IconData icon = Provider.of<SaleProvider>(
+                        context,
+                        listen: false,
+                      ).getPaymentIcon(method);
                       return DropdownMenuItem<PaymentMethod>(
                         value: method,
-                        child: Text(label),
+                        child: Row(
+                          children: [
+                            Icon(icon, size: 20,),
+                            SizedBox(width: 6),
+                            Text(label),
+                          ],
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_gringos_massas/components/dialogs/error_dialog.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -101,21 +102,33 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateProductStock(Product product, int quantity) async {
+  Future<bool> updateProductStock(
+    Product product,
+    int quantity,
+    BuildContext context,
+  ) async {
     int index = _products.indexWhere((p) => p.id == product.id);
+
+    if (quantity < 0) {
+      await showDialog(
+        context: context,
+        builder: (ctx) =>
+            ErrorDialog(content: 'Ação irá causar estoque negativo!'),
+      );
+      return false;
+    }
 
     if (index >= 0) {
       await http.patch(
         Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
-        body: jsonEncode({
-          "stockQuantity": quantity,
-          //Se produto já teve movimentação antes, não precisa atualizar
-          if (product.hasMovement == false) "hasMovement": true,
-        }),
+        body: jsonEncode({"stockQuantity": quantity}),
       );
+
+      await updateProductMovement(product);
 
       notifyListeners();
     }
+    return true;
   }
 
   void removeProduct(Product product) async {
@@ -137,6 +150,22 @@ class ProductProvider with ChangeNotifier {
         _products.insert(index, product);
         notifyListeners();
       }
+    }
+  }
+
+  Future<void> updateProductMovement(Product product) async {
+    int index = _products.indexWhere((p) => p.id == product.id);
+
+    if (index >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.PRODUCT_BASE_URL}/${product.id}.json'),
+        body: jsonEncode({
+          //Se produto já teve movimentação antes, não precisa atualizar
+          if (product.hasMovement == false) "hasMovement": true,
+        }),
+      );
+
+      notifyListeners();
     }
   }
 }
