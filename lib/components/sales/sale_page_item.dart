@@ -1,7 +1,7 @@
 import 'package:app_gringos_massas/components/common/product_image.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
-import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +20,6 @@ class _SaleItemState extends State<SalePageItem> {
 
   @override
   Widget build(BuildContext context) {
-    final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     return SizedBox(
       child: Card(
         elevation: 3,
@@ -49,17 +48,13 @@ class _SaleItemState extends State<SalePageItem> {
                     Row(
                       children: [
                         Icon(
-                          saleProvider.getPaymentIcon(
-                            widget.sale.paymentMethod!,
-                          ),
+                          AppUtils.getPaymentIcon(widget.sale.paymentMethod!),
                           color: Colors.grey[700],
                           size: 20,
                         ),
                         SizedBox(width: 6),
                         Text(
-                          saleProvider.getPaymentName(
-                            widget.sale.paymentMethod!,
-                          ),
+                          AppUtils.getPaymentName(widget.sale.paymentMethod!),
                           style: TextStyle(color: Colors.grey[700]),
                         ),
                       ],
@@ -95,14 +90,8 @@ class _SaleItemState extends State<SalePageItem> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.attach_money_rounded,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 2),
                         Text(
-                          widget.sale.total.toStringAsFixed(2),
+                          AppUtils.formatPrice(widget.sale.total),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -143,7 +132,7 @@ class _SaleItemState extends State<SalePageItem> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            '${product.quantity} x R\$ ${product.unitPrice.toStringAsFixed(2)}',
+                            '${product.quantity} x ${AppUtils.formatPrice(product.unitPrice)}',
                           ),
 
                           leading: ClipRRect(
@@ -157,7 +146,9 @@ class _SaleItemState extends State<SalePageItem> {
                             ),
                           ),
                           trailing: Text(
-                            'R\$ ${(product.unitPrice * product.quantity).toStringAsFixed(2)}',
+                            AppUtils.formatPrice(
+                              product.unitPrice * product.quantity,
+                            ),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,

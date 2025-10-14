@@ -83,6 +83,8 @@ class SaleProvider with ChangeNotifier {
         context,
       );
 
+      await productProvider.loadProducts(); //Faz um load dos produtos para atualizar os estoques na tela
+
       if (!success) {
         // Interrompe todo o processo se algum produto falhar
         return;
@@ -138,23 +140,5 @@ class SaleProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getPaymentName(PaymentMethod method) {
-    if (method == PaymentMethod.Cash) {
-      return 'Dinheiro';
-    } else if (method == PaymentMethod.CreditCard) {
-      return 'Cartão de Crédito';
-    } else if (method == PaymentMethod.Pix) {
-      return 'Pix';
-    }
-  }
-
-  getPaymentIcon(PaymentMethod method) {
-    if (method == PaymentMethod.Cash) {
-      return Icons.attach_money_rounded;
-    } else if (method == PaymentMethod.CreditCard) {
-      return Icons.payment_rounded;
-    } else if (method == PaymentMethod.Pix) {
-      return Icons.pix_rounded;
-    }
-  }
+  
 }

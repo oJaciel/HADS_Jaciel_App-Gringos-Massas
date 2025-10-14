@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:provider/provider.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
       setState(() {
         _nameController.text = product.name;
-        _priceController.text = product.price.toString();
+        _priceController.text = AppUtils.formatPrice(product.price);
         _imageController.text = product.imageUrl;
         _activeController = product.isActive;
       });
@@ -56,7 +58,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
         id: existingProduct?.id ?? Random().nextDouble().toString(),
         name: _nameController.text,
         imageUrl: _imageController.text,
-        price: double.parse(_priceController.text),
+        price: AppUtils.parsePrice(_priceController.text),
         isActive: _activeController,
         stockQuantity: existingProduct?.stockQuantity ?? 0,
         hasMovement: existingProduct?.hasMovement ?? false,
@@ -103,6 +105,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       decoration: InputDecoration(
                         hint: Text('Insira o nome do produto'),
                       ),
+                      textCapitalization: TextCapitalization.words,
                     ),
                     SizedBox(height: 8),
 
@@ -117,7 +120,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     TextFormField(
                       controller: _priceController,
                       decoration: InputDecoration(hint: Text('Insira o preço')),
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        CurrencyInputFormatter(
+                          leadingSymbol: 'R\$',
+                          useSymbolPadding: true,
+                          thousandSeparator: ThousandSeparator.Period,
+                          mantissaLength: 2,
+                        ),
+                      ],
                     ),
                     SizedBox(height: 8),
 

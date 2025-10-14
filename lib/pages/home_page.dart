@@ -1,9 +1,7 @@
 import 'package:app_gringos_massas/components/common/app_drawer.dart';
 import 'package:app_gringos_massas/components/common/home_page_button.dart';
 import 'package:app_gringos_massas/components/dialogs/select_stock_module_dialog.dart';
-import 'package:app_gringos_massas/providers/product_provider.dart';
-import 'package:app_gringos_massas/providers/sale_provider.dart';
-import 'package:app_gringos_massas/providers/stock_provider.dart';
+import 'package:app_gringos_massas/providers/general_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,10 +25,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
-    await Provider.of<ProductProvider>(context, listen: false).loadProducts();
-    await Provider.of<StockProvider>(context, listen: false).loadTransactions();
-    await Provider.of<SaleProvider>(context, listen: false).loadSales();
-
+    await Provider.of<GeneralProvider>(context, listen: false).loadDatabase(context);
+    
     if (mounted) {
       setState(() => _isLoading = false);
     }

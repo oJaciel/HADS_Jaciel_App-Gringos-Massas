@@ -7,6 +7,7 @@ import 'package:app_gringos_massas/pages/sales/sales_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_transaction_form_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_transaction_page.dart';
+import 'package:app_gringos_massas/providers/general_provider.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => GeneralProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => StockProvider()),
         ChangeNotifierProvider(create: (_) => SaleItemProvider()),

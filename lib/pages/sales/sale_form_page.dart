@@ -4,6 +4,7 @@ import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
@@ -199,6 +200,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: clientController,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                       labelText: 'Nome do cliente (opcional)',
                       border: OutlineInputBorder(),
@@ -236,7 +238,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                             ),
                           ),
                           Text(
-                            'R\$ ${Provider.of<SaleItemProvider>(context).totalAmount.toStringAsFixed(2)}',
+                            AppUtils.formatPrice(Provider.of<SaleItemProvider>(context).totalAmount),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 17,
@@ -259,14 +261,8 @@ class _SaleFormPageState extends State<SaleFormPage> {
                       ),
                     ),
                     items: PaymentMethod.values.map((method) {
-                      String label = Provider.of<SaleProvider>(
-                        context,
-                        listen: false,
-                      ).getPaymentName(method);
-                      IconData icon = Provider.of<SaleProvider>(
-                        context,
-                        listen: false,
-                      ).getPaymentIcon(method);
+                      String label = AppUtils.getPaymentName(method);
+                      IconData icon = AppUtils.getPaymentIcon(method);
                       return DropdownMenuItem<PaymentMethod>(
                         value: method,
                         child: Row(

@@ -3,6 +3,7 @@ import 'package:app_gringos_massas/components/common/product_image.dart';
 import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
+import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class ProductPageItem extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 SizedBox(height: 4),
-                Text('Valor: R\$ ${product.price.toStringAsFixed(2)}'),
+                Text('Valor: ${AppUtils.formatPrice(product.price)}'),
                 SizedBox(height: 4),
                 Stack(
                   children: [
@@ -82,8 +83,8 @@ class ProductPageItem extends StatelessWidget {
                 onPressed: () => showDialog(
                   context: context,
                   builder: (context) => DeleteAlertDialog(
-                    title: 'Deseja excluir o produto?',
-                    content: 'Excluir Produto',
+                    title: 'Excluir o produto?',
+                    content: 'Deseja realmente excluir?',
                     deleteMethod: () => Provider.of<ProductProvider>(
                       context,
                       listen: false,
