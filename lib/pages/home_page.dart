@@ -25,8 +25,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
 
-    await Provider.of<GeneralProvider>(context, listen: false).loadDatabase(context);
-    
+    await Provider.of<GeneralProvider>(
+      context,
+      listen: false,
+    ).loadDatabase(context);
+
     if (mounted) {
       setState(() => _isLoading = false);
     }
@@ -37,66 +40,74 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(title: Text('Gringo\'s Massas')),
       drawer: AppDrawer(),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/logo.png',
-                  width: MediaQuery.sizeOf(context).width * 0.5,
-                ),
-                SizedBox(height: 16),
-                Expanded(
-                  child: GridView(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-
-                    children: [
-                      HomePageButton(
-                        title: 'Produtos',
-                        icon: Icons.sell_rounded,
-                        onTap: () =>
-                            Navigator.of(context).pushNamed(AppRoutes.PRODUCTS),
-                      ),
-                      HomePageButton(
-                        title: 'Estoque',
-                        icon: Icons.inventory_2_rounded,
-                        onTap: () => showDialog(
-                          context: context,
-                          builder: (context) {
-                            return SelectStockModuleDialog();
-                          },
-                        ),
-                      ),
-                      HomePageButton(
-                        title: 'Vendas',
-                        icon: Icons.shopping_cart_rounded,
-                        onTap: () =>
-                            Navigator.of(context).pushNamed(AppRoutes.SALES),
-                      ),
-                      HomePageButton(
-                        title: 'Relatórios',
-                        icon: Icons.analytics_rounded,
-                        onTap: () =>
-                            Navigator.of(context).pushNamed(AppRoutes.REPORTS),
-                      ),
-                    ],
+      body: RefreshIndicator(
+        onRefresh: () => Provider.of<GeneralProvider>(
+          context,
+          listen: false,
+        ).loadDatabase(context),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    width: MediaQuery.sizeOf(context).width * 0.5,
                   ),
-                ),
-              ],
-            ),
-          ),
-          if (_isLoading)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withOpacity(0.3),
-                child: const Center(child: CircularProgressIndicator()),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: GridView(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+
+                      children: [
+                        HomePageButton(
+                          title: 'Produtos',
+                          icon: Icons.sell_rounded,
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed(AppRoutes.PRODUCTS),
+                        ),
+                        HomePageButton(
+                          title: 'Estoque',
+                          icon: Icons.inventory_2_rounded,
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SelectStockModuleDialog();
+                            },
+                          ),
+                        ),
+                        HomePageButton(
+                          title: 'Vendas',
+                          icon: Icons.shopping_cart_rounded,
+                          onTap: () =>
+                              Navigator.of(context).pushNamed(AppRoutes.SALES),
+                        ),
+                        HomePageButton(
+                          title: 'Relatórios',
+                          icon: Icons.analytics_rounded,
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed(AppRoutes.REPORTS),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-        ],
+            if (_isLoading)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(0.3),
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

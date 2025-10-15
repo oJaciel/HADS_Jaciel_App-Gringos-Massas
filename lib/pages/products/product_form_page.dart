@@ -92,21 +92,29 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Nome do produto',
+                    // Informações do produto
+                    const Text(
+                      'Nome do Produto',
                       style: TextStyle(
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     TextFormField(
                       controller: _nameController,
-                      decoration: InputDecoration(
-                        hint: Text('Insira o nome do produto'),
-                      ),
                       textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Nome do produto',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
+                      keyboardType: TextInputType.name,
                     ),
+
                     SizedBox(height: 8),
 
                     Text(
@@ -119,7 +127,14 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     SizedBox(height: 4),
                     TextFormField(
                       controller: _priceController,
-                      decoration: InputDecoration(hint: Text('Insira o preço')),
+                      decoration: const InputDecoration(
+                        labelText: 'Preço do produto',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
                       keyboardType: TextInputType.numberWithOptions(
                         decimal: true,
                       ),
@@ -144,10 +159,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     SizedBox(height: 4),
                     TextFormField(
                       controller: _imageController,
-                      decoration: InputDecoration(
-                        hint: Text('Insira o URL da imagem'),
+                      decoration: const InputDecoration(
+                        labelText: 'URL da Imagem',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                       ),
-                      keyboardType: TextInputType.numberWithOptions(),
+                      keyboardType: TextInputType.text,
                     ),
                     SizedBox(height: 8),
 

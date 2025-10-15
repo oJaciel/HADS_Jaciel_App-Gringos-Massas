@@ -78,19 +78,24 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nome do produto',
+                      'Produto',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                     ),
 
                     SizedBox(height: 4),
                     DropdownButtonFormField<Product>(
                       decoration: const InputDecoration(
-                        hintText: 'Selecione um produto',
+                        labelText: 'Selecione um produto',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                       ),
-                      
+
                       items: productList.map((product) {
                         return DropdownMenuItem<Product>(
                           value: product,
@@ -125,14 +130,19 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
                       'Quantidade',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 18,
                       ),
                     ),
                     SizedBox(height: 4),
                     TextFormField(
                       controller: _quantityController,
-                      decoration: InputDecoration(
-                        hint: Text('Informe a quantidade'),
+                      decoration: const InputDecoration(
+                        labelText: 'Informe a quantidade',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                       ),
                       keyboardType: TextInputType.number,
                       validator: (value) {
