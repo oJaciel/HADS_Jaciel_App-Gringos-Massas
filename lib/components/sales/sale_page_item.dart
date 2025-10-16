@@ -1,6 +1,8 @@
 import 'package:app_gringos_massas/components/common/product_image.dart';
+import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
+import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -123,37 +125,66 @@ class _SaleItemState extends State<SalePageItem> {
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 10, top: 5),
                     child: Column(
-                      children: widget.sale.products.map((product) {
-                        return ListTile(
-                          title: Text(
-                            product.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            '${product.quantity} x ${AppUtils.formatPrice(product.unitPrice)}',
-                          ),
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: ProductImage(
-                              product: Provider.of<ProductProvider>(
-                                context,
-                                listen: false,
-                              ).getProductById(product.productId),
-                              height: 90,
-                              width: 80,
+                      children: [
+                        Column(
+                          children: widget.sale.products.map((product) {
+                            return ListTile(
+                              title: Text(
+                                product.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${product.quantity} x ${AppUtils.formatPrice(product.unitPrice)}',
+                              ),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: ProductImage(
+                                  product: Provider.of<ProductProvider>(
+                                    context,
+                                    listen: false,
+                                  ).getProductById(product.productId),
+                                  height: 90,
+                                  width: 80,
+                                ),
+                              ),
+                              trailing: Text(
+                                AppUtils.formatPrice(
+                                  product.unitPrice * product.quantity,
+                                ),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () => showDialog(
+                                context: context,
+                                builder: (context) => DeleteAlertDialog(
+                                  title: 'Excluir a venda?',
+                                  content: 'Deseja realmente excluir?',
+                                  deleteMethod: () => Provider.of<SaleProvider>(
+                                    context,
+                                    listen: false,
+                                  ).removeSale(context, widget.sale),
+                                ),
+                              ),
+                              icon: Icon(
+                                Icons.delete_rounded,
+                                color: Colors.red,
+                              ),
+                              iconSize: 30,
                             ),
-                          ),
-                          trailing: Text(
-                            AppUtils.formatPrice(
-                              product.unitPrice * product.quantity,
-                            ),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                          ],
+                        ),
+                      ],
                     ),
                   )
                 : const SizedBox(),

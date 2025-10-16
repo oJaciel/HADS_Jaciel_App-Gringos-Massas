@@ -83,7 +83,8 @@ class SaleProvider with ChangeNotifier {
         context,
       );
 
-      await productProvider.loadProducts(); //Faz um load dos produtos para atualizar os estoques na tela
+      await productProvider
+          .loadProducts(); //Faz um load dos produtos para atualizar os estoques na tela
 
       if (!success) {
         // Interrompe todo o processo se algum produto falhar
@@ -140,5 +141,45 @@ class SaleProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  
+  Future<void> removeSale(BuildContext context, Sale sale) async {
+    final productProvider = Provider.of<ProductProvider>(
+      context,
+      listen: false,
+    );
+
+    final saleIndex = _sales.indexWhere((s) => s.id == sale.id);
+
+    if (saleIndex < 0) return;
+
+    for (SaleItem saleItem in sale.products) {
+      final product = productProvider.getProductById(saleItem.productId);
+
+      final updatedStockQuantity = product.stockQuantity + saleItem.quantity;
+
+      bool success = await productProvider.updateProductStock(
+        product,
+        updatedStockQuantity,
+        context,
+      );
+
+      if (!success) {
+        // Interrompe todo o processo se algum produto falhar
+        return;
+      }
+    }
+
+    //Faz um load dos produtos para atualizar os estoques na tela
+    await productProvider.loadProducts();
+
+    final response = await http.delete(
+      Uri.parse('${Constants.SALE_BASE_URL}/${sale.id}.json'),
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception('Erro ao excluir venda: ${response.body}');
+    }
+
+    _sales.removeAt(saleIndex);
+    notifyListeners();
+  }
 }
