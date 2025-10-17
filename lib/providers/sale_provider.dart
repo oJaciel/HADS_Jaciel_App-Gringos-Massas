@@ -141,6 +141,46 @@ class SaleProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateSale(BuildContext context, Sale sale) async {
+    final saleItemProvider = Provider.of<SaleItemProvider>(
+      context,
+      listen: false,
+    );
+    final index = _sales.indexWhere((s) => s.id == sale.id);
+
+    if (index >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.SALE_BASE_URL}/${sale.id}.json'),
+        body: jsonEncode({
+          "products": sale.products
+              .map(
+                (saleItem) => {
+                  "productId": saleItem.productId,
+                  "name": saleItem.name,
+                  "quantity": saleItem.quantity,
+                  "unitPrice": saleItem.unitPrice,
+                },
+              )
+              .toList(),
+          "total": sale.total,
+          if (sale.clientName!.isNotEmpty && sale.clientName != '')
+            "clientName": sale.clientName,
+          "paymentMethod": sale.paymentMethod?.name,
+          "date": sale.date.toIso8601String(),
+        }),
+      );
+
+      _sales[index] = sale;
+      //Limpa a lista dos itens de venda
+      saleItemProvider.clear();
+      Navigator.of(context).pop();
+
+      //Ordena a lista por ordem de data
+      _sales.sort((a, b) => b.date.compareTo(a.date));
+      notifyListeners();
+    }
+  }
+
   Future<void> removeSale(BuildContext context, Sale sale) async {
     final productProvider = Provider.of<ProductProvider>(
       context,

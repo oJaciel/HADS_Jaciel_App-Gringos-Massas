@@ -3,6 +3,7 @@ import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -164,6 +165,19 @@ class _SaleItemState extends State<SalePageItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(
+                                  AppRoutes.SALE_FORM,
+                                  arguments: widget.sale,
+                                );
+                              },
+                              icon: Icon(
+                                Icons.edit_rounded,
+                                color: Colors.grey[700],
+                              ),
+                              iconSize: 30,
+                            ),
                             IconButton(
                               onPressed: () => showDialog(
                                 context: context,
