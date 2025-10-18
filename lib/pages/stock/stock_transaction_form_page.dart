@@ -4,6 +4,7 @@ import 'package:app_gringos_massas/models/product.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StockTransactionFormPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
 
   final _formKey = GlobalKey<FormState>();
   final _quantityController = TextEditingController();
+  int _quantity = 0;
   Product? _selectedProduct;
 
   @override
@@ -134,30 +136,84 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
                       ),
                     ),
                     SizedBox(height: 4),
-                    TextFormField(
-                      controller: _quantityController,
-                      decoration: const InputDecoration(
-                        labelText: 'Informe a quantidade',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
+                    Center(
+                      child: FractionallySizedBox(
+                        widthFactor: 0.6,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (_quantity > 1) _quantity -= 1;
+                                      _quantityController.text = _quantity
+                                          .toString();
+                                    });
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Icon(Icons.remove_rounded, size: 20),
+                                  ),
+                                ),
+                              ),
+
+                              // Campo numérico expansível
+                              Expanded(
+                                flex: 4,
+                                child: TextFormField(
+                                  controller: _quantityController,
+                                  maxLength: 3,
+
+                                  textAlign: TextAlign.center,
+                                  decoration: const InputDecoration(
+                                    counterText: "",
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Informe a quantidade';
+                                    }
+                                    final n = int.tryParse(value);
+                                    if (n == null || n <= 0) {
+                                      return 'Quantidade inválida';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+
+                              Expanded(
+                                flex: 2,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _quantity += 1;
+                                      _quantityController.text = _quantity
+                                          .toString();
+                                    });
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Icon(Icons.add, size: 20),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Informe a quantidade';
-                        }
-                        if (int.tryParse(value) == null) {
-                          return 'Digite um número válido';
-                        }
-                        if (int.tryParse(value)! <= 0) {
-                          return 'Informe uma quantidade válida';
-                        }
-                        return null;
-                      },
                     ),
+
                     const Spacer(),
                     SizedBox(
                       height: 50,
