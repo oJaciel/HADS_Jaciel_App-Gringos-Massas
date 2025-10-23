@@ -85,7 +85,7 @@ class _ReportsPageState extends State<ReportsPage> {
               SizedBox(height: 10),
               Divider(),
               SizedBox(height: 10),
-              DailySalesCard(dayQuantity),
+              DailySalesCard(),
             ],
           ),
         ),

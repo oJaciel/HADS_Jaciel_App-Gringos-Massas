@@ -1,11 +1,14 @@
+import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
+import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/utils/app_utils.dart';
+import 'package:app_gringos_massas/utils/report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class DailySalesCard extends StatefulWidget {
-  const DailySalesCard(this.dayQuantity, {super.key});
-
-  final int dayQuantity;
+  const DailySalesCard({super.key});
 
   @override
   State<DailySalesCard> createState() => _DailySalesCardState();
@@ -65,77 +68,122 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.calendar_month_rounded,
-                    color: Colors.green,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'Vendas - Análise Diária',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ],
-            ),
+    final totalSalesValue = ReportUtils.getTotalSalesByPeriod(
+      Provider.of<SaleProvider>(context).sales,
+      startDate!,
+      endDate!,
+    );
 
-            const SizedBox(height: 12),
+    return DefaultTabController(
+      length: 2,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.calendar_month_rounded,
+                      color: Colors.green,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Vendas - Análise Diária',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ],
+              ),
 
-            InkWell(
-              onTap: _showDateRangePicker,
-              child: Chip(
-                elevation: 2,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                backgroundColor: Theme.of(
-                  context,
-                ).primaryColor.withOpacity(0.1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  side: BorderSide(
-                    color: Theme.of(context).primaryColor.withOpacity(0.4),
+              const SizedBox(height: 12),
+
+              InkWell(
+                onTap: _showDateRangePicker,
+                child: Chip(
+                  elevation: 2,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  backgroundColor: Theme.of(
+                    context,
+                  ).primaryColor.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    side: BorderSide(
+                      color: Theme.of(context).primaryColor.withOpacity(0.4),
+                    ),
+                  ),
+                  avatar: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.date_range_rounded,
+                      color: Theme.of(context).primaryColor,
+                      size: 18,
+                    ),
+                  ),
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(DateFormat('dd/MM/yyyy').format(startDate!)),
+                      const SizedBox(width: 8),
+                      Icon(Icons.arrow_forward_rounded, size: 18),
+                      const SizedBox(width: 8),
+                      Text(DateFormat('dd/MM/yyyy').format(endDate!)),
+                    ],
                   ),
                 ),
-                avatar: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  child: Icon(
-                    Icons.date_range_rounded,
-                    color: Theme.of(context).primaryColor,
-                    size: 18,
+              ),
+
+              SizedBox(height: 10),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Valor total do período:',
+                    style: TextStyle(fontSize: 14),
                   ),
-                ),
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  SizedBox(width: 6),
+                  Text(
+                    AppUtils.formatPrice(totalSalesValue),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 10),
+
+              TabBar(
+                tabs: [
+                  Tab(text: 'Lista'),
+                  Tab(text: 'Gráfico'),
+                ],
+              ),
+
+              SizedBox(
+                height: 200,
+                child: TabBarView(
                   children: [
-                    Text(DateFormat('dd/MM/yyyy').format(startDate!)),
-                    const SizedBox(width: 8),
-                    Icon(Icons.arrow_forward_rounded, size: 18),
-                    const SizedBox(width: 8),
-                    Text(DateFormat('dd/MM/yyyy').format(endDate!)),
+                    DailySalesList(startDate: startDate!, endDate: endDate!),
+                    Center(child: Text('Aqui vai o gráfico')),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

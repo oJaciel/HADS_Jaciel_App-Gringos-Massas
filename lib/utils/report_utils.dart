@@ -1,3 +1,4 @@
+import 'package:app_gringos_massas/models/daily_sale_report.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 
 class ReportUtils {
@@ -78,9 +79,60 @@ class ReportUtils {
     final startPrevious = startRecent.subtract(Duration(days: days));
 
     final totalRecent = getSaleCountByPeriod(sales, startRecent, endRecent);
-    final totalPrevious = getSaleCountByPeriod(sales, startPrevious, endPrevious);
+    final totalPrevious = getSaleCountByPeriod(
+      sales,
+      startPrevious,
+      endPrevious,
+    );
 
     if (totalPrevious == 0) return 100;
     return ((totalRecent - totalPrevious) / totalPrevious) * 100;
+  }
+
+  static List<DailySaleReport> getDailySales(
+    List<Sale> sales,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    List<DailySaleReport> dailySales = [];
+
+    // Garantir que startDate comece à meia-noite e endDate termine às 23:59
+    DateTime currentDate = DateTime(
+      startDate.year,
+      startDate.month,
+      startDate.day,
+    );
+
+    while (currentDate.isBefore(endDate) ||
+        currentDate.isAtSameMomentAs(endDate)) {
+      // Vendas do dia atual
+      final salesOfDay = sales.where((s) {
+        final saleDate = s.date;
+        return saleDate.year == currentDate.year &&
+            saleDate.month == currentDate.month &&
+            saleDate.day == currentDate.day;
+      }).toList();
+
+      // Somar valores e contar vendas
+      final totalValue = salesOfDay.fold<double>(0, (sum, s) => sum + s.total);
+      final salesCount = salesOfDay.length;
+
+      // Adicionar ao relatório
+      dailySales.add(
+        DailySaleReport(
+          date: currentDate,
+          totalValue: totalValue,
+          salesCount: salesCount,
+        ),
+      );
+
+      // Passar para o próximo dia
+      currentDate = currentDate.add(Duration(days: 1));
+    }
+
+    //Remove da lista os dias que não tiveram vendas
+    dailySales.removeWhere((s) => s.totalValue == 0);
+
+    return dailySales;
   }
 }
