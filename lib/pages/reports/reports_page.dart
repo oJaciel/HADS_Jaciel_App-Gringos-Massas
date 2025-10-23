@@ -1,4 +1,5 @@
 import 'package:app_gringos_massas/components/reports/custom_report_card.dart';
+import 'package:app_gringos_massas/components/reports/daily_sales_card.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/report_utils.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,10 @@ class _ReportsPageState extends State<ReportsPage> {
                   ),
                 ],
               ),
+              SizedBox(height: 10),
+              Divider(),
+              SizedBox(height: 10),
+              DailySalesCard(dayQuantity),
             ],
           ),
         ),

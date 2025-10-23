@@ -38,6 +38,9 @@ dependencies:
   http: ^1.5.0
   intl: ^0.20.2
   flutter_multi_formatter: ^2.13.10
+  fl_chart: ^1.1.1
+  custom_date_range_picker: ^1.2.0
+  syncfusion_flutter_datepicker: ^31.2.3
 
 dev_dependencies:
   flutter_test:
