@@ -1,3 +1,4 @@
+import 'package:app_gringos_massas/components/reports/daily_sales_chart.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
@@ -174,11 +175,16 @@ class _DailySalesCardState extends State<DailySalesCard> {
               ),
 
               SizedBox(
-                height: 200,
+                height: 250,
                 child: TabBarView(
                   children: [
                     DailySalesList(startDate: startDate!, endDate: endDate!),
-                    Center(child: Text('Aqui vai o gráfico')),
+                    SizedBox.expand(
+                      child: DailySalesChart(
+                        startDate: startDate!,
+                        endDate: endDate!,
+                      ),
+                    ),
                   ],
                 ),
               ),

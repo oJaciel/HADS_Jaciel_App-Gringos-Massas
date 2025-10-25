@@ -52,7 +52,7 @@ class DailySalesList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
-                SizedBox(width: 12,),
+                SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
