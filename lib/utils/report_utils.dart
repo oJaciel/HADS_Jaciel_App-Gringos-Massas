@@ -39,26 +39,6 @@ class ReportUtils {
     return total;
   }
 
-  static double getPercentageChangeLastDays(List<Sale> sales, {int days = 7}) {
-    final now = DateTime.now();
-
-    final endRecent = now;
-    final startRecent = now.subtract(Duration(days: days));
-
-    final endPrevious = startRecent;
-    final startPrevious = startRecent.subtract(Duration(days: days));
-
-    final totalRecent = getTotalSalesByPeriod(sales, startRecent, endRecent);
-    final totalPrevious = getTotalSalesByPeriod(
-      sales,
-      startPrevious,
-      endPrevious,
-    );
-
-    if (totalPrevious == 0) return 100;
-    return ((totalRecent - totalPrevious) / totalPrevious) * 100;
-  }
-
   static int getSaleCountByPeriod(
     List<Sale> sales,
     DateTime startDate,
@@ -67,26 +47,6 @@ class ReportUtils {
     sales = getSalesByPeriod(sales, startDate, endDate);
 
     return sales.length;
-  }
-
-  static double getPercentageCountLastDays(List<Sale> sales, {int days = 7}) {
-    final now = DateTime.now();
-
-    final endRecent = now;
-    final startRecent = now.subtract(Duration(days: days));
-
-    final endPrevious = startRecent;
-    final startPrevious = startRecent.subtract(Duration(days: days));
-
-    final totalRecent = getSaleCountByPeriod(sales, startRecent, endRecent);
-    final totalPrevious = getSaleCountByPeriod(
-      sales,
-      startPrevious,
-      endPrevious,
-    );
-
-    if (totalPrevious == 0) return 100;
-    return ((totalRecent - totalPrevious) / totalPrevious) * 100;
   }
 
   static List<DailySaleReport> getDailySales(
@@ -134,5 +94,27 @@ class ReportUtils {
     dailySales.removeWhere((s) => s.totalValue == 0);
 
     return dailySales;
+  }
+
+
+
+  static double getPercentageLastDays(List<Sale> sales, Function method, {int days = 7}) {
+    final now = DateTime.now();
+
+    final endRecent = now;
+    final startRecent = now.subtract(Duration(days: days));
+
+    final endPrevious = startRecent;
+    final startPrevious = startRecent.subtract(Duration(days: days));
+
+    final totalRecent = method(sales, startRecent, endRecent);
+    final totalPrevious = method(
+      sales,
+      startPrevious,
+      endPrevious,
+    );
+
+    if (totalPrevious == 0) return 100;
+    return ((totalRecent - totalPrevious) / totalPrevious) * 100;
   }
 }
