@@ -11,7 +11,7 @@ class CustomReportCard extends StatelessWidget {
     required this.sales,
     required this.dayQuantity,
     required this.content,
-    required this.percent,
+    this.percent = null,
   });
 
   final String label;
@@ -19,7 +19,7 @@ class CustomReportCard extends StatelessWidget {
   final List<Sale> sales;
   final int dayQuantity;
   final content;
-  final double percent;
+  final double? percent;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +42,12 @@ class CustomReportCard extends StatelessWidget {
                   child: Icon(icon, color: Colors.green, size: 20),
                 ),
                 const SizedBox(width: 10),
-                Text(
-                  label,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                Expanded(
+                  child: Text(
+                    label,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -60,7 +63,7 @@ class CustomReportCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            PercentageChip(percentage: percent),
+            if (percent != null) PercentageChip(percentage: percent!),
             SizedBox(height: 2),
             Text(
               dayQuantity == 1 ? 'Hoje' : 'Últimos $dayQuantity dias',

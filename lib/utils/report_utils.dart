@@ -96,9 +96,46 @@ class ReportUtils {
     return dailySales;
   }
 
+  static int getTotalProductsSoldByPeriod(
+    List<Sale> sales,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    sales = getSalesByPeriod(sales, startDate, endDate);
 
+    int totalProducts = 0;
 
-  static double getPercentageLastDays(List<Sale> sales, Function method, {int days = 7}) {
+    for (final sale in sales) {
+      for (final product in sale.products) {
+        totalProducts += product.quantity;
+      }
+    }
+
+    return totalProducts;
+  }
+
+  static double getAverageTicketByPeriod(
+  List<Sale> sales,
+  DateTime startDate,
+  DateTime endDate,
+) {
+  // Filtra as vendas dentro do período
+  sales = getSalesByPeriod(sales, startDate, endDate);
+
+  if (sales.isEmpty) return 0;
+
+  // Soma total das vendas
+  final total = sales.fold<double>(0, (sum, s) => sum + s.total);
+
+  // Divide pelo número de vendas
+  return total / sales.length;
+}
+
+  static double getPercentageLastDays(
+    List<Sale> sales,
+    Function method, {
+    int days = 7,
+  }) {
     final now = DateTime.now();
 
     final endRecent = now;
@@ -108,11 +145,7 @@ class ReportUtils {
     final startPrevious = startRecent.subtract(Duration(days: days));
 
     final totalRecent = method(sales, startRecent, endRecent);
-    final totalPrevious = method(
-      sales,
-      startPrevious,
-      endPrevious,
-    );
+    final totalPrevious = method(sales, startPrevious, endPrevious);
 
     if (totalPrevious == 0) return 100;
     return ((totalRecent - totalPrevious) / totalPrevious) * 100;
