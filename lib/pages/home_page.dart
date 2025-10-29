@@ -1,5 +1,6 @@
 import 'package:app_gringos_massas/components/common/app_drawer.dart';
 import 'package:app_gringos_massas/components/common/home_page_button.dart';
+import 'package:app_gringos_massas/components/dialogs/select_reports_module_dialog.dart';
 import 'package:app_gringos_massas/components/dialogs/select_stock_module_dialog.dart';
 import 'package:app_gringos_massas/providers/general_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
@@ -89,9 +90,12 @@ class _HomePageState extends State<HomePage> {
                         HomePageButton(
                           title: 'Relatórios',
                           icon: Icons.analytics_rounded,
-                          onTap: () => Navigator.of(
-                            context,
-                          ).pushNamed(AppRoutes.REPORTS),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SelectReportsModuleDialog();
+                            },
+                          ),
                         ),
                       ],
                     ),

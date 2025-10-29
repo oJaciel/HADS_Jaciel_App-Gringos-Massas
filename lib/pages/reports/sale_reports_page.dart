@@ -5,14 +5,14 @@ import 'package:app_gringos_massas/utils/report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ReportsPage extends StatefulWidget {
-  const ReportsPage({super.key});
+class SaleReportsPage extends StatefulWidget {
+  const SaleReportsPage({super.key});
 
   @override
-  State<ReportsPage> createState() => _ReportsPageState();
+  State<SaleReportsPage> createState() => _ReportsPageState();
 }
 
-class _ReportsPageState extends State<ReportsPage> {
+class _ReportsPageState extends State<SaleReportsPage> {
   int dayQuantity = 1;
 
   @override
@@ -20,7 +20,7 @@ class _ReportsPageState extends State<ReportsPage> {
     final saleProvider = Provider.of<SaleProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Relatórios')),
+      appBar: AppBar(title: Text('Relatórios de Vendas')),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(

@@ -7,5 +7,6 @@ class AppRoutes {
   static const STOCK = '/stock';
   static const STOCK_TRANSACTION = '/stock-transaction';
   static const STOCK_TRANSACTION_FORM = '/stock-transaction-form';
-  static const REPORTS = '/reports';
+  static const SALE_REPORTS = '/sale-reports';
+  static const STOCK_REPORTS = '/stock-reports';
 }

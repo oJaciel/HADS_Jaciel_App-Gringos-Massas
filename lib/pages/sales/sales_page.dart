@@ -12,7 +12,19 @@ class SalesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final sales = Provider.of<SaleProvider>(context).sales;
     return Scaffold(
-      appBar: AppBar(title: Text('Vendas')),
+      appBar: AppBar(
+        title: Text('Vendas'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.SALE_REPORTS),
+            icon: Icon(Icons.analytics_outlined),
+          ),
+          IconButton(
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.SALE_FORM),
+            icon: Icon(Icons.add),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Column(

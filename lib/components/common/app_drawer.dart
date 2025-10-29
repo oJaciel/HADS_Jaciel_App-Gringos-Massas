@@ -171,16 +171,30 @@ class AppDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.add_chart_rounded,
-                      color: colorScheme.primary,
+                      Icons.assessment_outlined,
+                      color: Theme.of(context).primaryColor,
                     ),
                     title: Text(
-                      'Gerar Relatório',
+                      'Relatórios de Venda',
                       style: TextStyle(color: colorScheme.onSurface),
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(AppRoutes.REPORTS);
+                      Navigator.of(context).pushNamed(AppRoutes.SALE_REPORTS);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.insert_chart_outlined_rounded,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    title: Text(
+                      'Relatórios de Estoque',
+                      style: TextStyle(color: colorScheme.onSurface),
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(AppRoutes.STOCK_REPORTS);
                     },
                   ),
                 ],

@@ -1,7 +1,8 @@
 import 'package:app_gringos_massas/pages/home_page.dart';
 import 'package:app_gringos_massas/pages/products/product_form_page.dart';
 import 'package:app_gringos_massas/pages/products/products_page.dart';
-import 'package:app_gringos_massas/pages/reports/reports_page.dart';
+import 'package:app_gringos_massas/pages/reports/sale_reports_page.dart';
+import 'package:app_gringos_massas/pages/reports/stock_reports_page.dart';
 import 'package:app_gringos_massas/pages/sales/sale_form_page.dart';
 import 'package:app_gringos_massas/pages/sales/sales_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_page.dart';
@@ -48,7 +49,8 @@ class MyApp extends StatelessWidget {
           AppRoutes.STOCK: (ctx) => StockPage(),
           AppRoutes.STOCK_TRANSACTION: (ctx) => StockTransactionPage(),
           AppRoutes.STOCK_TRANSACTION_FORM: (ctx) => StockTransactionFormPage(),
-          AppRoutes.REPORTS: (ctx) => ReportsPage(),
+          AppRoutes.SALE_REPORTS: (ctx) => SaleReportsPage(),
+          AppRoutes.STOCK_REPORTS: (ctx) => StockReportsPage(),
         },
       ),
     );
