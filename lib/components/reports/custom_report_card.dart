@@ -1,5 +1,4 @@
 import 'package:app_gringos_massas/components/reports/percentage_chip.dart';
-import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +7,6 @@ class CustomReportCard extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
-    required this.sales,
     required this.dayQuantity,
     required this.content,
     this.percent = null,
@@ -16,7 +14,6 @@ class CustomReportCard extends StatelessWidget {
 
   final String label;
   final IconData icon;
-  final List<Sale> sales;
   final int dayQuantity;
   final content;
   final double? percent;
