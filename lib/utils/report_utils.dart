@@ -1,19 +1,12 @@
 import 'package:app_gringos_massas/models/daily_sale_report.dart';
 import 'package:app_gringos_massas/models/sale.dart';
+import 'package:app_gringos_massas/models/stock_transaction.dart';
+import 'package:app_gringos_massas/providers/stock_provider.dart';
 
 class ReportUtils {
-  static get1Week(DateTime date) {
-    return date.subtract(Duration(days: 7));
-  }
+  //Relatórios de Vendas
 
-  static get1Month(DateTime date) {
-    return DateTime(date.year, date.month - 1, date.day);
-  }
-
-  static get1Year(DateTime date) {
-    return DateTime(date.year - 1, date.month, date.day);
-  }
-
+  //Obter lista de vendas no período
   static List<Sale> getSalesByPeriod(
     List<Sale> sales,
     DateTime startDate,
@@ -26,6 +19,7 @@ class ReportUtils {
         .toList();
   }
 
+  //Obter valor total das vendas no período
   static double getTotalSalesByPeriod(
     List<Sale> sales,
     DateTime startDate,
@@ -39,6 +33,7 @@ class ReportUtils {
     return total;
   }
 
+  //Obter quantidade de vendas no período
   static int getSaleCountByPeriod(
     List<Sale> sales,
     DateTime startDate,
@@ -49,6 +44,7 @@ class ReportUtils {
     return sales.length;
   }
 
+  //Obter valor e quantidade das vendas no período por dia (lista)
   static List<DailySaleReport> getDailySales(
     List<Sale> sales,
     DateTime startDate,
@@ -96,6 +92,7 @@ class ReportUtils {
     return dailySales;
   }
 
+  //Obter a quantidade de produtos vendidos no período
   static int getTotalProductsSoldByPeriod(
     List<Sale> sales,
     DateTime startDate,
@@ -114,22 +111,61 @@ class ReportUtils {
     return totalProducts;
   }
 
+  //Obter o valor médio das vendas no período
   static double getAverageTicketByPeriod(
-  List<Sale> sales,
-  DateTime startDate,
-  DateTime endDate,
-) {
-  // Filtra as vendas dentro do período
-  sales = getSalesByPeriod(sales, startDate, endDate);
+    List<Sale> sales,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    // Filtra as vendas dentro do período
+    sales = getSalesByPeriod(sales, startDate, endDate);
 
-  if (sales.isEmpty) return 0;
+    if (sales.isEmpty) return 0;
 
-  // Soma total das vendas
-  final total = sales.fold<double>(0, (sum, s) => sum + s.total);
+    // Soma total das vendas
+    final total = sales.fold<double>(0, (sum, s) => sum + s.total);
 
-  // Divide pelo número de vendas
-  return total / sales.length;
-}
+    // Divide pelo número de vendas
+    return total / sales.length;
+  }
+
+  // Relatórios de estoque
+
+  //Obter a lista de transações no período
+  static List<StockTransaction> getTransactionsByPeriod(
+    List<StockTransaction> transactions,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    return transactions
+        .where(
+          (transaction) =>
+              transaction.date.isAfter(startDate) &&
+              transaction.date.isBefore(endDate),
+        )
+        .toList();
+  }
+
+  //Obter a quantidade total produzida no período
+  static int getProducedQuantityByPeriod(
+    List<StockTransaction> transactions,
+    DateTime startDate,
+    DateTime endDate,
+  ) {
+    List<StockTransaction> filteredTransactions = getTransactionsByPeriod(
+      transactions,
+      startDate,
+      endDate,
+    );
+
+    int producedQuantity = 0;
+    for (StockTransaction transaction in filteredTransactions) {
+      if (transaction.type == TransactionType.entry) {
+        producedQuantity += transaction.quantity;
+      }
+    }
+    return producedQuantity;
+  }
 
   static double getPercentageLastDays(
     List<Sale> sales,

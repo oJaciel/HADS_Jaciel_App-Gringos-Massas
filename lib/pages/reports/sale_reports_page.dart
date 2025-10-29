@@ -1,5 +1,6 @@
 import 'package:app_gringos_massas/components/reports/custom_report_card.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_card.dart';
+import 'package:app_gringos_massas/components/reports/report_date_dropdown_button.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/report_utils.dart';
 import 'package:flutter/material.dart';
@@ -27,22 +28,15 @@ class _ReportsPageState extends State<SaleReportsPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                DropdownButton<int>(
-                  items: [
-                    DropdownMenuItem(value: 1, child: Text('Hoje')),
-                    DropdownMenuItem(value: 7, child: Text('Últimos 7 dias')),
-                    DropdownMenuItem(value: 15, child: Text('Últimos 15 dias')),
-                    DropdownMenuItem(value: 30, child: Text('Últimos 30 dias')),
-                  ],
-                  elevation: 3,
-                  padding: EdgeInsets.all(4),
-                  value: dayQuantity,
+                ReportDateDropdownButton(
+                  dayQuantity: dayQuantity,
                   onChanged: (days) {
                     setState(() {
                       dayQuantity = days!;
                     });
                   },
                 ),
+                SizedBox(height: 10),
                 Row(
                   children: [
                     //Card do valor total das vendas
@@ -50,7 +44,6 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       child: CustomReportCard(
                         label: 'Entradas',
                         icon: Icons.payments_outlined,
-                        sales: saleProvider.sales,
                         dayQuantity: dayQuantity,
                         content: ReportUtils.getTotalSalesByPeriod(
                           saleProvider.sales,
@@ -69,7 +62,6 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       child: CustomReportCard(
                         label: 'Vendas',
                         icon: Icons.shopping_bag_outlined,
-                        sales: saleProvider.sales,
                         dayQuantity: dayQuantity,
                         content: ReportUtils.getSaleCountByPeriod(
                           saleProvider.sales,
@@ -85,7 +77,7 @@ class _ReportsPageState extends State<SaleReportsPage> {
                     ),
                   ],
                 ),
-                
+
                 Row(
                   children: [
                     //Card de total de produtos vendidos
@@ -93,7 +85,6 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       child: CustomReportCard(
                         label: 'Produtos Vendidos',
                         icon: Icons.shopping_cart_outlined,
-                        sales: saleProvider.sales,
                         dayQuantity: dayQuantity,
                         content: ReportUtils.getTotalProductsSoldByPeriod(
                           saleProvider.sales,
@@ -111,7 +102,6 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       child: CustomReportCard(
                         label: 'Média das Vendas',
                         icon: Icons.show_chart_rounded,
-                        sales: saleProvider.sales,
                         dayQuantity: dayQuantity,
                         content: ReportUtils.getAverageTicketByPeriod(
                           saleProvider.sales,
@@ -127,9 +117,7 @@ class _ReportsPageState extends State<SaleReportsPage> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Divider(),
-                SizedBox(height: 10),
+                SizedBox(height: 12),
                 DailySalesCard(),
               ],
             ),
