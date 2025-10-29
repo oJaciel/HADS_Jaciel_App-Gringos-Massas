@@ -52,7 +52,12 @@ class _ProductFormPageState extends State<ProductFormPage> {
       final args = ModalRoute.of(context)?.settings.arguments;
       final existingProduct = args as Product?;
 
-      if (_formKey.currentState!.validate()) ;
+      if (!_formKey.currentState!.validate()) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
 
       Product product = Product(
         id: existingProduct?.id ?? Random().nextDouble().toString(),
@@ -113,6 +118,15 @@ class _ProductFormPageState extends State<ProductFormPage> {
                         ),
                       ),
                       keyboardType: TextInputType.name,
+                      validator: (value) {
+                        if (value?.trim() == '') {
+                          return 'Preencha o nome do produto';
+                        }
+                        if (value!.length <= 3) {
+                          return 'Nome deve ter no mínimo 4 letras';
+                        }
+                        return null;
+                      },
                     ),
 
                     SizedBox(height: 8),
@@ -146,6 +160,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
                           mantissaLength: 2,
                         ),
                       ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Preencha o preço do produto';
+                        }
+                        // Remove R$, espaços, pontos e converte vírgula em ponto
+                        String cleaned = value
+                            .replaceAll('R\$', '')
+                            .replaceAll('.', '')
+                            .replaceAll(',', '.')
+                            .trim();
+                        double? parsed = double.tryParse(cleaned);
+                        if (parsed == null) {
+                          return 'Preço inválido';
+                        }
+                        if (parsed <= 0) {
+                          return 'Preço deve ser maior que zero';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 8),
 

@@ -53,6 +53,11 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
+    if (product.name.trim() == '' ||
+        product.name.length <= 3 ||
+        product.price <= 0)
+      return;
+
     final response = await http.post(
       Uri.parse('${Constants.PRODUCT_BASE_URL}.json'),
       body: jsonEncode({
@@ -82,6 +87,11 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product product) async {
+    if (product.name.trim() == '' ||
+        product.name.length <= 3 ||
+        product.price <= 0)
+      return;
+
     int index = _products.indexWhere((p) => p.id == product.id);
 
     if (index >= 0) {

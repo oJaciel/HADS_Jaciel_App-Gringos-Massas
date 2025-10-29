@@ -34,7 +34,12 @@ class _StockTransactionState extends State<StockTransactionFormPage> {
     });
 
     // Validações do formulário
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
 
     final qty = int.tryParse(_quantityController.text);
 

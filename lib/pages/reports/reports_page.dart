@@ -3,7 +3,6 @@ import 'package:app_gringos_massas/components/reports/daily_sales_card.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/report_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ReportsPage extends StatefulWidget {

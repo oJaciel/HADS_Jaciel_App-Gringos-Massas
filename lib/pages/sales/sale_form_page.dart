@@ -89,6 +89,10 @@ class _SaleFormPageState extends State<SaleFormPage> {
     final products = context.read<ProductProvider>().activeProducts;
 
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
+    final saleItemProvider = Provider.of<SaleItemProvider>(
+      context,
+      listen: false,
+    );
 
     Future<void> submitForm() async {
       setState(() {
@@ -96,6 +100,32 @@ class _SaleFormPageState extends State<SaleFormPage> {
       });
 
       final existingSale = ModalRoute.of(context)?.settings.arguments as Sale?;
+
+      if (saleItemProvider.items.values.isEmpty) {
+        setState(() {
+          _isLoading = false;
+        });
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.warning_rounded),
+                SizedBox(width: 6),
+                Text('Erro!'),
+              ],
+            ),
+            content: Text('Adicione produtos a venda!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Ok'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
 
       // Validações do formulário
       if (!formKey.currentState!.validate()) return;

@@ -62,6 +62,8 @@ class StockProvider with ChangeNotifier {
     int quantity,
     TransactionType type,
   ) async {
+    if (quantity <= 0) return;
+
     int updatedStockQuantity = product.stockQuantity;
     if (type == TransactionType.entry) {
       updatedStockQuantity += quantity;
