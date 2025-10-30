@@ -1,7 +1,5 @@
 import 'package:app_gringos_massas/components/common/app_drawer.dart';
 import 'package:app_gringos_massas/components/common/home_page_button.dart';
-import 'package:app_gringos_massas/components/dialogs/select_reports_module_dialog.dart';
-import 'package:app_gringos_massas/components/dialogs/select_stock_module_dialog.dart';
 import 'package:app_gringos_massas/providers/general_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
@@ -74,12 +72,9 @@ class _HomePageState extends State<HomePage> {
                         HomePageButton(
                           title: 'Estoque',
                           icon: Icons.inventory_2_rounded,
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SelectStockModuleDialog();
-                            },
-                          ),
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed(AppRoutes.STOCK_OVERVIEW),
                         ),
                         HomePageButton(
                           title: 'Vendas',
@@ -90,12 +85,9 @@ class _HomePageState extends State<HomePage> {
                         HomePageButton(
                           title: 'Relatórios',
                           icon: Icons.analytics_rounded,
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SelectReportsModuleDialog();
-                            },
-                          ),
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed(AppRoutes.REPORTS_OVERVIEW),
                         ),
                       ],
                     ),

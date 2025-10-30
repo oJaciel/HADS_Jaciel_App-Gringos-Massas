@@ -20,107 +20,104 @@ class _ReportsPageState extends State<SaleReportsPage> {
   Widget build(BuildContext context) {
     final saleProvider = Provider.of<SaleProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Relatórios de Vendas')),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                ReportDateDropdownButton(
-                  dayQuantity: dayQuantity,
-                  onChanged: (days) {
-                    setState(() {
-                      dayQuantity = days!;
-                    });
-                  },
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    //Card do valor total das vendas
-                    Expanded(
-                      child: CustomReportCard(
-                        label: 'Entradas',
-                        icon: Icons.payments_outlined,
-                        dayQuantity: dayQuantity,
-                        content: ReportUtils.getTotalSalesByPeriod(
-                          saleProvider.sales,
-                          DateTime.now().subtract(Duration(days: dayQuantity)),
-                          DateTime.now(),
-                        ),
-                        percent: ReportUtils.getPercentageLastDays(
-                          saleProvider.sales,
-                          ReportUtils.getTotalSalesByPeriod,
-                          days: dayQuantity,
-                        ),
+    return SingleChildScrollView(
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              ReportDateDropdownButton(
+                dayQuantity: dayQuantity,
+                onChanged: (days) {
+                  setState(() {
+                    dayQuantity = days!;
+                  });
+                },
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  //Card do valor total das vendas
+                  Expanded(
+                    child: CustomReportCard(
+                      label: 'Entradas',
+                      icon: Icons.payments_outlined,
+                      dayQuantity: dayQuantity,
+                      content: ReportUtils.getTotalSalesByPeriod(
+                        saleProvider.sales,
+                        DateTime.now().subtract(Duration(days: dayQuantity)),
+                        DateTime.now(),
+                      ),
+                      percent: ReportUtils.getPercentageLastDays(
+                        saleProvider.sales,
+                        ReportUtils.getTotalSalesByPeriod,
+                        days: dayQuantity,
                       ),
                     ),
-                    //Card da quantidade de vendas
-                    Expanded(
-                      child: CustomReportCard(
-                        label: 'Vendas',
-                        icon: Icons.shopping_bag_outlined,
-                        dayQuantity: dayQuantity,
-                        content: ReportUtils.getSaleCountByPeriod(
-                          saleProvider.sales,
-                          DateTime.now().subtract(Duration(days: dayQuantity)),
-                          DateTime.now(),
-                        ),
-                        percent: ReportUtils.getPercentageLastDays(
-                          saleProvider.sales,
-                          ReportUtils.getSaleCountByPeriod,
-                          days: dayQuantity,
-                        ),
+                  ),
+                  //Card da quantidade de vendas
+                  Expanded(
+                    child: CustomReportCard(
+                      label: 'Vendas',
+                      icon: Icons.shopping_bag_outlined,
+                      dayQuantity: dayQuantity,
+                      content: ReportUtils.getSaleCountByPeriod(
+                        saleProvider.sales,
+                        DateTime.now().subtract(Duration(days: dayQuantity)),
+                        DateTime.now(),
+                      ),
+                      percent: ReportUtils.getPercentageLastDays(
+                        saleProvider.sales,
+                        ReportUtils.getSaleCountByPeriod,
+                        days: dayQuantity,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
-                Row(
-                  children: [
-                    //Card de total de produtos vendidos
-                    Expanded(
-                      child: CustomReportCard(
-                        label: 'Produtos Vendidos',
-                        icon: Icons.shopping_cart_outlined,
-                        dayQuantity: dayQuantity,
-                        content: ReportUtils.getTotalProductsSoldByPeriod(
-                          saleProvider.sales,
-                          DateTime.now().subtract(Duration(days: dayQuantity)),
-                          DateTime.now(),
-                        ),
-                        percent: ReportUtils.getPercentageLastDays(
-                          saleProvider.sales,
-                          ReportUtils.getTotalProductsSoldByPeriod,
-                          days: dayQuantity,
-                        ),
+              Row(
+                children: [
+                  //Card de total de produtos vendidos
+                  Expanded(
+                    child: CustomReportCard(
+                      label: 'Produtos Vendidos',
+                      icon: Icons.shopping_cart_outlined,
+                      dayQuantity: dayQuantity,
+                      content: ReportUtils.getTotalProductsSoldByPeriod(
+                        saleProvider.sales,
+                        DateTime.now().subtract(Duration(days: dayQuantity)),
+                        DateTime.now(),
+                      ),
+                      percent: ReportUtils.getPercentageLastDays(
+                        saleProvider.sales,
+                        ReportUtils.getTotalProductsSoldByPeriod,
+                        days: dayQuantity,
                       ),
                     ),
-                    Expanded(
-                      child: CustomReportCard(
-                        label: 'Média das Vendas',
-                        icon: Icons.show_chart_rounded,
-                        dayQuantity: dayQuantity,
-                        content: ReportUtils.getAverageTicketByPeriod(
-                          saleProvider.sales,
-                          DateTime.now().subtract(Duration(days: dayQuantity)),
-                          DateTime.now(),
-                        ),
-                        percent: ReportUtils.getPercentageLastDays(
-                          saleProvider.sales,
-                          ReportUtils.getAverageTicketByPeriod,
-                          days: dayQuantity,
-                        ),
+                  ),
+                  Expanded(
+                    child: CustomReportCard(
+                      label: 'Média das Vendas',
+                      icon: Icons.show_chart_rounded,
+                      dayQuantity: dayQuantity,
+                      content: ReportUtils.getAverageTicketByPeriod(
+                        saleProvider.sales,
+                        DateTime.now().subtract(Duration(days: dayQuantity)),
+                        DateTime.now(),
+                      ),
+                      percent: ReportUtils.getPercentageLastDays(
+                        saleProvider.sales,
+                        ReportUtils.getAverageTicketByPeriod,
+                        days: dayQuantity,
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                DailySalesCard(),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12),
+              DailySalesCard(),
+            ],
           ),
         ),
       ),

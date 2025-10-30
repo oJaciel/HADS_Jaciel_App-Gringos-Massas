@@ -1,3 +1,5 @@
+import 'package:app_gringos_massas/pages/reports/reports_overview_page.dart';
+import 'package:app_gringos_massas/pages/stock/stock_overview_page.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 
@@ -137,7 +139,13 @@ class AppDrawer extends StatelessWidget {
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(AppRoutes.STOCK);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              StockOverviewPage(initShowBalance: true),
+                        ),
+                      );
                     },
                   ),
                   ListTile(
@@ -151,7 +159,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     onTap: () => Navigator.of(
                       context,
-                    ).pushNamed(AppRoutes.STOCK_TRANSACTION),
+                    ).pushNamed(AppRoutes.STOCK_OVERVIEW),
                   ),
                   Divider(color: colorScheme.primary),
                   SizedBox(height: 4),
@@ -180,7 +188,7 @@ class AppDrawer extends StatelessWidget {
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(AppRoutes.SALE_REPORTS);
+                      Navigator.pushNamed(context, AppRoutes.REPORTS_OVERVIEW);
                     },
                   ),
                   ListTile(
@@ -194,7 +202,13 @@ class AppDrawer extends StatelessWidget {
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(AppRoutes.STOCK_REPORTS);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ReportsOverviewPage(initShowStock: true),
+                        ),
+                      );
                     },
                   ),
                 ],

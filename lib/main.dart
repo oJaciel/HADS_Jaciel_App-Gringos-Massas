@@ -1,11 +1,13 @@
 import 'package:app_gringos_massas/pages/home_page.dart';
 import 'package:app_gringos_massas/pages/products/product_form_page.dart';
 import 'package:app_gringos_massas/pages/products/products_page.dart';
+import 'package:app_gringos_massas/pages/reports/reports_overview_page.dart';
 import 'package:app_gringos_massas/pages/reports/sale_reports_page.dart';
 import 'package:app_gringos_massas/pages/reports/stock_reports_page.dart';
 import 'package:app_gringos_massas/pages/sales/sale_form_page.dart';
 import 'package:app_gringos_massas/pages/sales/sales_page.dart';
-import 'package:app_gringos_massas/pages/stock/stock_page.dart';
+import 'package:app_gringos_massas/pages/stock/stock_overview_page.dart';
+import 'package:app_gringos_massas/pages/stock/stock_balance_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_transaction_form_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_transaction_page.dart';
 import 'package:app_gringos_massas/providers/general_provider.dart';
@@ -26,7 +28,6 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GeneralProvider()),
@@ -46,9 +47,11 @@ class MyApp extends StatelessWidget {
           AppRoutes.PRODUCT_FORM: (ctx) => ProductFormPage(),
           AppRoutes.SALES: (ctx) => SalesPage(),
           AppRoutes.SALE_FORM: (ctx) => SaleFormPage(),
-          AppRoutes.STOCK: (ctx) => StockPage(),
+          AppRoutes.STOCK_OVERVIEW: (ctx) => StockOverviewPage(),
+          AppRoutes.STOCK_BALANCE: (ctx) => StockBalancePage(),
           AppRoutes.STOCK_TRANSACTION: (ctx) => StockTransactionPage(),
           AppRoutes.STOCK_TRANSACTION_FORM: (ctx) => StockTransactionFormPage(),
+          AppRoutes.REPORTS_OVERVIEW: (ctx) => ReportsOverviewPage(),
           AppRoutes.SALE_REPORTS: (ctx) => SaleReportsPage(),
           AppRoutes.STOCK_REPORTS: (ctx) => StockReportsPage(),
         },
