@@ -1,3 +1,4 @@
+import 'package:app_gringos_massas/pages/reports/reports_overview_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_balance_page.dart';
 import 'package:app_gringos_massas/pages/stock/stock_transaction_page.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +15,12 @@ class StockOverviewPage extends StatefulWidget {
 class _ReportsOverviewPageState extends State<StockOverviewPage> {
   late int _selectedIndex;
 
-  final List<Widget> _pages = const [StockTransactionPage(), StockBalancePage()];
+  final List<Widget> _pages = const [
+    StockTransactionPage(),
+    StockBalancePage(),
+  ];
 
-    @override
+  @override
   void initState() {
     super.initState();
     // Define o índice inicial com base nas flags recebidas pelo widget
@@ -38,7 +42,22 @@ class _ReportsOverviewPageState extends State<StockOverviewPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(_selectedIndex == 0 ? 'Transações de Estoque' : 'Saldos em Estoque'),),
+      appBar: AppBar(
+        title: Text(
+          _selectedIndex == 0 ? 'Transações de Estoque' : 'Saldos em Estoque',
+        ),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ReportsOverviewPage(initShowStock: true),
+              ),
+            ),
+            icon: Icon(Icons.analytics_outlined),
+          ),
+        ],
+      ),
       body: SafeArea(child: _pages[_selectedIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

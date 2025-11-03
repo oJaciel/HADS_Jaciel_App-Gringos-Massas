@@ -16,7 +16,7 @@ class SalesPage extends StatelessWidget {
         title: Text('Vendas'),
         actions: [
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.SALE_REPORTS),
+            onPressed: () => Navigator.of(context).pushNamed(AppRoutes.REPORTS_OVERVIEW),
             icon: Icon(Icons.analytics_outlined),
           ),
           IconButton(
