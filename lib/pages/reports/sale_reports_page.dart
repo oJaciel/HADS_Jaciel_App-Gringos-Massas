@@ -2,7 +2,7 @@ import 'package:app_gringos_massas/components/reports/custom_report_card.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_card.dart';
 import 'package:app_gringos_massas/components/reports/report_date_dropdown_button.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
-import 'package:app_gringos_massas/utils/report_utils.dart';
+import 'package:app_gringos_massas/utils/sale_report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,14 +43,14 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       label: 'Entradas',
                       icon: Icons.payments_outlined,
                       dayQuantity: dayQuantity,
-                      content: ReportUtils.getTotalSalesByPeriod(
+                      content: SaleReportUtils.getTotalSalesByPeriod(
                         saleProvider.sales,
                         DateTime.now().subtract(Duration(days: dayQuantity)),
                         DateTime.now(),
                       ),
-                      percent: ReportUtils.getPercentageLastDays(
+                      percent: SaleReportUtils.getPercentageLastDays(
                         saleProvider.sales,
-                        ReportUtils.getTotalSalesByPeriod,
+                        SaleReportUtils.getTotalSalesByPeriod,
                         days: dayQuantity,
                       ),
                     ),
@@ -61,14 +61,14 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       label: 'Vendas',
                       icon: Icons.shopping_bag_outlined,
                       dayQuantity: dayQuantity,
-                      content: ReportUtils.getSaleCountByPeriod(
+                      content: SaleReportUtils.getSaleCountByPeriod(
                         saleProvider.sales,
                         DateTime.now().subtract(Duration(days: dayQuantity)),
                         DateTime.now(),
                       ),
-                      percent: ReportUtils.getPercentageLastDays(
+                      percent: SaleReportUtils.getPercentageLastDays(
                         saleProvider.sales,
-                        ReportUtils.getSaleCountByPeriod,
+                        SaleReportUtils.getSaleCountByPeriod,
                         days: dayQuantity,
                       ),
                     ),
@@ -84,14 +84,14 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       label: 'Produtos Vendidos',
                       icon: Icons.shopping_cart_outlined,
                       dayQuantity: dayQuantity,
-                      content: ReportUtils.getTotalProductsSoldByPeriod(
+                      content: SaleReportUtils.getTotalProductsSoldByPeriod(
                         saleProvider.sales,
                         DateTime.now().subtract(Duration(days: dayQuantity)),
                         DateTime.now(),
                       ),
-                      percent: ReportUtils.getPercentageLastDays(
+                      percent: SaleReportUtils.getPercentageLastDays(
                         saleProvider.sales,
-                        ReportUtils.getTotalProductsSoldByPeriod,
+                        SaleReportUtils.getTotalProductsSoldByPeriod,
                         days: dayQuantity,
                       ),
                     ),
@@ -101,14 +101,14 @@ class _ReportsPageState extends State<SaleReportsPage> {
                       label: 'Média das Vendas',
                       icon: Icons.show_chart_rounded,
                       dayQuantity: dayQuantity,
-                      content: ReportUtils.getAverageTicketByPeriod(
+                      content: SaleReportUtils.getAverageTicketByPeriod(
                         saleProvider.sales,
                         DateTime.now().subtract(Duration(days: dayQuantity)),
                         DateTime.now(),
                       ),
-                      percent: ReportUtils.getPercentageLastDays(
+                      percent: SaleReportUtils.getPercentageLastDays(
                         saleProvider.sales,
-                        ReportUtils.getAverageTicketByPeriod,
+                        SaleReportUtils.getAverageTicketByPeriod,
                         days: dayQuantity,
                       ),
                     ),

@@ -1,9 +1,7 @@
 import 'package:app_gringos_massas/models/daily_sale_report.dart';
 import 'package:app_gringos_massas/models/sale.dart';
-import 'package:app_gringos_massas/models/stock_transaction.dart';
-import 'package:app_gringos_massas/providers/stock_provider.dart';
 
-class ReportUtils {
+class SaleReportUtils {
   //Relatórios de Vendas
 
   //Obter lista de vendas no período
@@ -129,43 +127,7 @@ class ReportUtils {
     return total / sales.length;
   }
 
-  // Relatórios de estoque
-
-  //Obter a lista de transações no período
-  static List<StockTransaction> getTransactionsByPeriod(
-    List<StockTransaction> transactions,
-    DateTime startDate,
-    DateTime endDate,
-  ) {
-    return transactions
-        .where(
-          (transaction) =>
-              transaction.date.isAfter(startDate) &&
-              transaction.date.isBefore(endDate),
-        )
-        .toList();
-  }
-
-  //Obter a quantidade total produzida no período
-  static int getProducedQuantityByPeriod(
-    List<StockTransaction> transactions,
-    DateTime startDate,
-    DateTime endDate,
-  ) {
-    List<StockTransaction> filteredTransactions = getTransactionsByPeriod(
-      transactions,
-      startDate,
-      endDate,
-    );
-
-    int producedQuantity = 0;
-    for (StockTransaction transaction in filteredTransactions) {
-      if (transaction.type == TransactionType.entry) {
-        producedQuantity += transaction.quantity;
-      }
-    }
-    return producedQuantity;
-  }
+  
 
   static double getPercentageLastDays(
     List<Sale> sales,

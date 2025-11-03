@@ -2,7 +2,7 @@ import 'package:app_gringos_massas/components/reports/daily_sales_chart.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
-import 'package:app_gringos_massas/utils/report_utils.dart';
+import 'package:app_gringos_massas/utils/sale_report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -69,7 +69,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
   @override
   Widget build(BuildContext context) {
-    final totalSalesValue = ReportUtils.getTotalSalesByPeriod(
+    final totalSalesValue = SaleReportUtils.getTotalSalesByPeriod(
       Provider.of<SaleProvider>(context).sales,
       startDate!,
       endDate!,

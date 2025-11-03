@@ -51,12 +51,17 @@ class CustomReportCard extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            Text(
-              content is double
-                  ? AppUtils.formatPrice(content)
-                  : content.toString(),
-              style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-            ),
+            content is Widget
+                ? content
+                : Text(
+                    content is double
+                        ? AppUtils.formatPrice(content)
+                        : content.toString(),
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
 
             const SizedBox(height: 8),
 
