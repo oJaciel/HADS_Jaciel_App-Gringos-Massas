@@ -1,6 +1,5 @@
-import 'package:app_gringos_massas/components/common/product_image.dart';
-import 'package:app_gringos_massas/components/sales/sale_form_item.dart';
-import 'package:app_gringos_massas/models/product.dart';
+import 'package:app_gringos_massas/components/sales/sale_or_service_selector.dart';
+import 'package:app_gringos_massas/components/sales/sale_products_selector.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/models/sale_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
@@ -27,6 +26,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
 
   bool _isLoading = false;
   bool _isInit = true;
+  bool _isSale = true;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -86,7 +86,6 @@ class _SaleFormPageState extends State<SaleFormPage> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     bool isEdit = args != null;
-    final products = context.read<ProductProvider>().activeProducts;
 
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final saleItemProvider = Provider.of<SaleItemProvider>(
@@ -200,111 +199,20 @@ class _SaleFormPageState extends State<SaleFormPage> {
                       ),
                     ),
 
-                    if (isEdit)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Text('Produtos não podem ser editados!')],
-                      ),
-
-                    //Dropdown e lista de produtos
-                    Opacity(
-                      opacity: isEdit ? 0.4 : 1,
-                      child: AbsorbPointer(
-                        absorbing: isEdit,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Produtos',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            DropdownButtonFormField<Product>(
-                              decoration: const InputDecoration(
-                                labelText: 'Adicionar produto',
-                                border: OutlineInputBorder(),
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 10,
-                                ),
-                              ),
-                              items: products.map((product) {
-                                return DropdownMenuItem<Product>(
-                                  value: product,
-                                  child: Row(
-                                    children: [
-                                      ProductImage(
-                                        product: product,
-                                        height: 36,
-                                        width: 36,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Text(product.name),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                if (value != null) {
-                                  context.read<SaleItemProvider>().addItem(
-                                    value,
-                                  );
-                                }
-                              },
-                            ),
-                            const SizedBox(height: 12),
-
-                            Consumer<SaleItemProvider>(
-                              builder: (context, saleItems, _) {
-                                final sale = isEdit ? args as Sale : null;
-                                final itemsList = isEdit
-                                    ? sale!.products
-                                    : saleItems.items.values.toList();
-                                if (itemsList.isEmpty) {
-                                  return SizedBox(
-                                    height: 120,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: const [
-                                          Icon(
-                                            Icons.shopping_cart_outlined,
-                                            size: 40,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            'Nenhum produto adicionado',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: itemsList.length,
-                                  itemBuilder: (ctx, i) =>
-                                      SaleFormItem(itemsList[i]),
-                                );
-                              },
-                            ),
-
-                            const SizedBox(height: 16),
-                          ],
-                        ),
-                      ),
+                    SaleOrServiceSelector(
+                      isSale: _isSale,
+                      onSelectSale: () => setState(() => _isSale = true),
+                      onSelectService: () => setState(() => _isSale = false),
                     ),
+
+                    SizedBox(height: 8),
+
+                    _isSale
+                        ? SaleProductsSelector(
+                            isEdit: isEdit,
+                            existingSale: isEdit ? args as Sale : null,
+                          )
+                        : Column(children: [Text('Serviço')]),
 
                     // Informações do cliente
                     const Text(
