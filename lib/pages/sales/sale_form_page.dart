@@ -5,9 +5,11 @@ import 'package:app_gringos_massas/models/sale_item.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/providers/service_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +25,8 @@ class _SaleFormPageState extends State<SaleFormPage> {
   PaymentMethod? paymentMethod;
   final formKey = GlobalKey<FormState>();
   final clientController = TextEditingController();
+  final serviceDescriptionController = TextEditingController();
+  final serviceValueController = TextEditingController();
 
   bool _isLoading = false;
   bool _isInit = true;
@@ -52,7 +56,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
 
       if (args != null) {
         final sale = args as Sale;
-
+    
         setState(() {
           selectedDate = sale.date;
           paymentMethod = sale.paymentMethod;
@@ -93,7 +97,12 @@ class _SaleFormPageState extends State<SaleFormPage> {
       listen: false,
     );
 
-    Future<void> submitForm() async {
+    final serviceProvider = Provider.of<ServiceProvider>(
+      context,
+      listen: false,
+    );
+
+    Future<void> submitSale() async {
       setState(() {
         _isLoading = true;
       });
@@ -154,12 +163,39 @@ class _SaleFormPageState extends State<SaleFormPage> {
       });
     }
 
+    Future<void> submitService() async {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Validações do formulário
+      if (!formKey.currentState!.validate()) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      await serviceProvider.addService(
+        context,
+        serviceDescriptionController.text,
+        clientController.text,
+        paymentMethod,
+        AppUtils.parsePrice(serviceValueController.text),
+        selectedDate,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Formulário de Venda'),
         actions: [
           IconButton(
-            onPressed: submitForm,
+            onPressed: _isSale ? submitSale : submitService,
             icon: const Icon(Icons.save_rounded),
           ),
         ],
@@ -212,7 +248,35 @@ class _SaleFormPageState extends State<SaleFormPage> {
                             isEdit: isEdit,
                             existingSale: isEdit ? args as Sale : null,
                           )
-                        : Column(children: [Text('Serviço')]),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Descrição',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              TextFormField(
+                                controller: serviceDescriptionController,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                decoration: const InputDecoration(
+                                  labelText: 'Descrição do serviço (opcional)',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                keyboardType: TextInputType.text,
+                              ),
+                            ],
+                          ),
+
+                    const SizedBox(height: 16),
 
                     // Informações do cliente
                     const Text(
@@ -240,8 +304,8 @@ class _SaleFormPageState extends State<SaleFormPage> {
                     const SizedBox(height: 24),
 
                     // Resumo da venda
-                    const Text(
-                      'Resumo da venda',
+                    Text(
+                      _isSale ? 'Resumo da venda' : 'Resumo do serviço',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -265,18 +329,67 @@ class _SaleFormPageState extends State<SaleFormPage> {
                                 ),
                               ),
                             ),
-                            Text(
-                              AppUtils.formatPrice(
-                                Provider.of<SaleItemProvider>(
-                                  context,
-                                ).totalAmount,
-                              ),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                                color: Colors.black87,
-                              ),
-                            ),
+                            _isSale
+                                ? Text(
+                                    AppUtils.formatPrice(
+                                      Provider.of<SaleItemProvider>(
+                                        context,
+                                      ).totalAmount,
+                                    ),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                      color: Colors.black87,
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: TextFormField(
+                                      controller: serviceValueController,
+                                      decoration: const InputDecoration(
+                                        //labelText: 'Valor do serviço',
+                                        border: OutlineInputBorder(),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 10,
+                                        ),
+                                      ),
+                                      keyboardType:
+                                          TextInputType.numberWithOptions(
+                                            decimal: true,
+                                          ),
+                                      inputFormatters: [
+                                        CurrencyInputFormatter(
+                                          leadingSymbol: 'R\$',
+                                          useSymbolPadding: true,
+                                          thousandSeparator:
+                                              ThousandSeparator.Period,
+                                          mantissaLength: 2,
+                                        ),
+                                      ],
+                                      validator: (value) {
+                                        if (value == null ||
+                                            value.trim().isEmpty) {
+                                          return 'Preencha o valor do serviço';
+                                        }
+                                        // Remove R$, espaços, pontos e converte vírgula em ponto
+                                        String cleaned = value
+                                            .replaceAll('R\$', '')
+                                            .replaceAll('.', '')
+                                            .replaceAll(',', '.')
+                                            .trim();
+                                        double? parsed = double.tryParse(
+                                          cleaned,
+                                        );
+                                        if (parsed == null) {
+                                          return 'Preço inválido';
+                                        }
+                                        if (parsed <= 0) {
+                                          return 'Preço deve ser maior que zero';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
@@ -321,7 +434,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: submitForm,
+                        onPressed: _isSale ? submitSale : submitService,
                         icon: const Icon(Icons.save_rounded),
                         label: const Text(
                           'Salvar venda',

@@ -113,7 +113,7 @@ class SaleProductsSelector extends StatelessWidget {
                   },
                 ),
 
-                const SizedBox(height: 16),
+                
               ],
             ),
           ),

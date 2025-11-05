@@ -14,6 +14,7 @@ import 'package:app_gringos_massas/providers/general_provider.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/providers/service_provider.dart';
 import 'package:app_gringos_massas/providers/stock_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:app_gringos_massas/utils/app_theme.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => StockProvider()),
         ChangeNotifierProvider(create: (_) => SaleItemProvider()),
         ChangeNotifierProvider(create: (_) => SaleProvider()),
+        ChangeNotifierProvider(create: (_) => ServiceProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
