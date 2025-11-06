@@ -90,4 +90,21 @@ class ServiceProvider with ChangeNotifier {
     //Ordena a lista por ordem de data
     _services.sort((a, b) => b.date.compareTo(a.date));
   }
+
+  Future<void> removeService(Service service) async {
+    final serviceIndex = _services.indexWhere((s) => s.id == service.id);
+
+    if (serviceIndex < 0) return;
+
+    final response = await http.delete(
+      Uri.parse('${Constants.SERVICE_BASE_URL}/${service.id}.json'),
+    );
+
+    if (response.statusCode >= 400) {
+      throw Exception('Erro ao excluir serviço: ${response.body}');
+    }
+
+    _services.removeAt(serviceIndex);
+    notifyListeners();
+  }
 }

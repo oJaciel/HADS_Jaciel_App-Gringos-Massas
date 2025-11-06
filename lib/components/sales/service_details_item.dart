@@ -1,9 +1,11 @@
 import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
 import 'package:app_gringos_massas/models/service.dart';
+import 'package:app_gringos_massas/providers/service_provider.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ServiceDetailsItem extends StatefulWidget {
   const ServiceDetailsItem(this.service, {super.key});
@@ -175,7 +177,11 @@ class _SaleItemState extends State<ServiceDetailsItem> {
                                 builder: (context) => DeleteAlertDialog(
                                   title: 'Excluir a venda?',
                                   content: 'Deseja realmente excluir?',
-                                  deleteMethod: () {},
+                                  deleteMethod: () =>
+                                      Provider.of<ServiceProvider>(
+                                        context,
+                                        listen: false,
+                                      ).removeService(widget.service),
                                 ),
                               ),
                               icon: Icon(
