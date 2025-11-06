@@ -35,7 +35,7 @@ class _SaleOrServiceSelectorState extends State<SaleOrServiceSelector> {
               side: BorderSide(color: Theme.of(context).primaryColor),
             ),
             label: Text('Venda'),
-            icon: Icon(Icons.sell_rounded),
+            icon: Icon(Icons.receipt_long_rounded),
           ),
         ),
         SizedBox(width: 8),

@@ -13,6 +13,38 @@ class ServiceProvider with ChangeNotifier {
 
   int get servicesCount => _services.length;
 
+  Future<void> loadServices() async {
+    _services.clear();
+
+    final response = await http.get(
+      Uri.parse('${Constants.SERVICE_BASE_URL}.json'),
+    );
+
+    if (response.body == 'null') return;
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+    data.forEach((serviceId, serviceData) {
+      _services.add(
+        Service(
+          id: serviceId,
+          description: serviceData['description'] ?? '',
+          total: serviceData['total'],
+          clientName: serviceData['clientName'] ?? '',
+          paymentMethod: serviceData['paymentMethod'] != null
+              ? PaymentMethod.values.firstWhere(
+                  (e) => e.name == serviceData['paymentMethod'],
+                )
+              : null,
+          date: DateTime.parse(serviceData['date']),
+        ),
+      );
+    });
+
+    //Ordena a lista por ordem de data
+    _services.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
+  }
+
   Future<void> addService(
     BuildContext context,
     String? description,
@@ -50,6 +82,10 @@ class ServiceProvider with ChangeNotifier {
         date: date,
       ),
     );
+
+    Navigator.of(context).pop();
+
+    await loadServices();
 
     //Ordena a lista por ordem de data
     _services.sort((a, b) => b.date.compareTo(a.date));

@@ -134,7 +134,7 @@ class SaleProvider with ChangeNotifier {
     saleItemProvider.clear();
     Navigator.of(context).pop();
 
-    loadSales();
+    await loadSales();
 
     //Ordena a lista por ordem de data
     _sales.sort((a, b) => b.date.compareTo(a.date));

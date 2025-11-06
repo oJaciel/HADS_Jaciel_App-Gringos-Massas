@@ -1,24 +1,20 @@
-import 'package:app_gringos_massas/components/common/product_image.dart';
 import 'package:app_gringos_massas/components/dialogs/delete_alert_dialog.dart';
-import 'package:app_gringos_massas/models/sale.dart';
-import 'package:app_gringos_massas/providers/product_provider.dart';
-import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/models/service.dart';
 import 'package:app_gringos_massas/utils/app_routes.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-class SalePageItem extends StatefulWidget {
-  const SalePageItem(this.sale, {super.key});
+class ServiceDetailsItem extends StatefulWidget {
+  const ServiceDetailsItem(this.service, {super.key});
 
-  final Sale sale;
+  final Service service;
 
   @override
-  State<SalePageItem> createState() => _SaleItemState();
+  State<ServiceDetailsItem> createState() => _SaleItemState();
 }
 
-class _SaleItemState extends State<SalePageItem> {
+class _SaleItemState extends State<ServiceDetailsItem> {
   bool _isExpanded = false;
 
   @override
@@ -29,15 +25,18 @@ class _SaleItemState extends State<SalePageItem> {
         children: [
           ListTile(
             visualDensity: VisualDensity(vertical: 4),
-            leading: Icon(Icons.receipt_long_rounded, color: Colors.grey),
+            leading: Icon(
+              Icons.miscellaneous_services_rounded,
+              color: Colors.grey,
+            ),
             title: Row(
               children: [
-                Text(DateFormat('dd/MM').format(widget.sale.date)),
+                Text(DateFormat('dd/MM').format(widget.service.date)),
                 SizedBox(width: 4),
                 Icon(Icons.circle, size: 4),
                 SizedBox(width: 4),
                 Text(
-                  DateFormat('HH:mm').format(widget.sale.date),
+                  DateFormat('HH:mm').format(widget.service.date),
                   style: TextStyle(fontSize: 16),
                 ),
               ],
@@ -45,27 +44,27 @@ class _SaleItemState extends State<SalePageItem> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.sale.paymentMethod != null &&
-                    widget.sale.paymentMethod.toString() != '')
+                if (widget.service.paymentMethod != null &&
+                    widget.service.paymentMethod.toString() != '')
                   Row(
                     children: [
                       Icon(
-                        AppUtils.getPaymentIcon(widget.sale.paymentMethod!),
+                        AppUtils.getPaymentIcon(widget.service.paymentMethod!),
                         color: Colors.grey[700],
                         size: 20,
                       ),
                       SizedBox(width: 6),
                       Text(
-                        AppUtils.getPaymentName(widget.sale.paymentMethod!),
+                        AppUtils.getPaymentName(widget.service.paymentMethod!),
                         style: TextStyle(color: Colors.grey[700]),
                       ),
                     ],
                   ),
-                if (widget.sale.clientName != null ||
-                    widget.sale.clientName != '' ||
-                    widget.sale.clientName!.isNotEmpty)
+                if (widget.service.clientName != null &&
+                    widget.service.clientName != '' &&
+                    widget.service.clientName!.isNotEmpty)
                   Text(
-                    widget.sale.clientName!,
+                    'Cliente: ${widget.service.clientName!}',
                     style: TextStyle(color: Colors.grey[700]),
                   ),
               ],
@@ -93,7 +92,7 @@ class _SaleItemState extends State<SalePageItem> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        AppUtils.formatPrice(widget.sale.total),
+                        AppUtils.formatPrice(widget.service.total),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -127,41 +126,33 @@ class _SaleItemState extends State<SalePageItem> {
                     padding: const EdgeInsets.only(bottom: 10, top: 5),
                     child: Column(
                       children: [
-                        Column(
-                          children: widget.sale.products.map((product) {
-                            return ListTile(
-                              title: Text(
-                                product.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                        widget.service.description != null &&
+                                widget.service.description != '' &&
+                                widget.service.description!.isNotEmpty
+                            ? ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    height: 90,
+                                    width: 80,
+                                    color: Colors.grey,
+                                    child: Icon(
+                                      Icons.miscellaneous_services_rounded,
+                                      size: 45,
+                                      color: Colors.grey[800],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              subtitle: Text(
-                                '${product.quantity} x ${AppUtils.formatPrice(product.unitPrice)}',
-                              ),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: ProductImage(
-                                  product: Provider.of<ProductProvider>(
-                                    context,
-                                    listen: false,
-                                  ).getProductById(product.productId),
-                                  height: 90,
-                                  width: 80,
+                                title: Text(
+                                  'Descrição',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                              trailing: Text(
-                                AppUtils.formatPrice(
-                                  product.unitPrice * product.quantity,
+                                subtitle: Text(
+                                  widget.service.description ?? '',
                                 ),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                              )
+                            : SizedBox(),
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -169,7 +160,7 @@ class _SaleItemState extends State<SalePageItem> {
                               onPressed: () {
                                 Navigator.of(context).pushNamed(
                                   AppRoutes.SALE_FORM,
-                                  arguments: widget.sale,
+                                  arguments: widget.service,
                                 );
                               },
                               icon: Icon(
@@ -184,10 +175,7 @@ class _SaleItemState extends State<SalePageItem> {
                                 builder: (context) => DeleteAlertDialog(
                                   title: 'Excluir a venda?',
                                   content: 'Deseja realmente excluir?',
-                                  deleteMethod: () => Provider.of<SaleProvider>(
-                                    context,
-                                    listen: false,
-                                  ).removeSale(context, widget.sale),
+                                  deleteMethod: () {},
                                 ),
                               ),
                               icon: Icon(
