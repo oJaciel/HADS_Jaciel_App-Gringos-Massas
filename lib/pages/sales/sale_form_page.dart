@@ -2,6 +2,7 @@ import 'package:app_gringos_massas/components/sales/sale_or_service_selector.dar
 import 'package:app_gringos_massas/components/sales/sale_products_selector.dart';
 import 'package:app_gringos_massas/models/sale.dart';
 import 'package:app_gringos_massas/models/sale_item.dart';
+import 'package:app_gringos_massas/models/service.dart';
 import 'package:app_gringos_massas/providers/product_provider.dart';
 import 'package:app_gringos_massas/providers/sale_item_provider.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
@@ -55,21 +56,37 @@ class _SaleFormPageState extends State<SaleFormPage> {
       if (args == null) Provider.of<SaleItemProvider>(context).clear();
 
       if (args != null) {
-        final sale = args as Sale;
-    
-        setState(() {
-          selectedDate = sale.date;
-          paymentMethod = sale.paymentMethod;
-          clientController.text = sale.clientName ?? '';
-          for (SaleItem saleItem in sale.products) {
-            Provider.of<SaleItemProvider>(context, listen: false).addItem(
-              Provider.of<ProductProvider>(
-                context,
-                listen: false,
-              ).getProductById(saleItem.productId),
-            );
-          }
-        });
+        //Se vier args e for uma venda, preenche os campos de venda
+        if (args is Sale) {
+          final sale = args;
+
+          setState(() {
+            selectedDate = sale.date;
+            paymentMethod = sale.paymentMethod;
+            clientController.text = sale.clientName ?? '';
+            for (SaleItem saleItem in sale.products) {
+              Provider.of<SaleItemProvider>(context, listen: false).addItem(
+                Provider.of<ProductProvider>(
+                  context,
+                  listen: false,
+                ).getProductById(saleItem.productId),
+              );
+            }
+          });
+          //Se for serviço, preenche os campos de serviço
+        } else if (args is Service) {
+          _isSale = false;
+
+          final service = args;
+          setState(() {
+            selectedDate = service.date;
+            paymentMethod = service.paymentMethod;
+            clientController.text = service.clientName ?? '';
+            serviceDescriptionController.text = service.description ?? '';
+            serviceValueController.text =
+                'R\$ ${service.total.toStringAsFixed(2).replaceAll('.', ',')}';
+          });
+        }
       }
       _isInit = false;
     }
@@ -168,6 +185,9 @@ class _SaleFormPageState extends State<SaleFormPage> {
         _isLoading = true;
       });
 
+      final existingService =
+          ModalRoute.of(context)?.settings.arguments as Service?;
+
       // Validações do formulário
       if (!formKey.currentState!.validate()) {
         setState(() {
@@ -176,14 +196,27 @@ class _SaleFormPageState extends State<SaleFormPage> {
         return;
       }
 
-      await serviceProvider.addService(
-        context,
-        serviceDescriptionController.text,
-        clientController.text,
-        paymentMethod,
-        AppUtils.parsePrice(serviceValueController.text),
-        selectedDate,
-      );
+      if (existingService != null) {
+        Service updatedService = Service(
+          id: existingService.id,
+          total: AppUtils.parsePrice(serviceValueController.text),
+          date: selectedDate,
+          clientName: clientController.text,
+          description: serviceDescriptionController.text,
+          paymentMethod: paymentMethod,
+        );
+        await serviceProvider.updateService(updatedService);
+        Navigator.of(context).pop();
+      } else {
+        await serviceProvider.addService(
+          context,
+          serviceDescriptionController.text,
+          clientController.text,
+          paymentMethod,
+          AppUtils.parsePrice(serviceValueController.text),
+          selectedDate,
+        );
+      }
 
       setState(() {
         _isLoading = false;
@@ -239,6 +272,7 @@ class _SaleFormPageState extends State<SaleFormPage> {
                       isSale: _isSale,
                       onSelectSale: () => setState(() => _isSale = true),
                       onSelectService: () => setState(() => _isSale = false),
+                      isEdit: isEdit,
                     ),
 
                     SizedBox(height: 8),

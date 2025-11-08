@@ -91,6 +91,30 @@ class ServiceProvider with ChangeNotifier {
     _services.sort((a, b) => b.date.compareTo(a.date));
   }
 
+  Future<void> updateService(Service service) async {
+    final serviceIndex = _services.indexWhere((s) => s.id == service.id);
+
+    if (serviceIndex >= 0) {
+      await http.patch(
+        Uri.parse('${Constants.SERVICE_BASE_URL}/${service.id}.json'),
+        body: jsonEncode({
+          if (service.description!.isNotEmpty && service.description != '')
+            "description": service.description,
+          if (service.clientName!.isNotEmpty && service.clientName != '')
+            "clientName": service.clientName,
+          "paymentMethod": service.paymentMethod?.name,
+          "total": service.total,
+          "date": service.date.toIso8601String(),
+        }),
+      );
+
+      _services[serviceIndex] = service;
+
+      _services.sort((a, b) => b.date.compareTo(a.date));
+      notifyListeners();
+    }
+  }
+
   Future<void> removeService(Service service) async {
     final serviceIndex = _services.indexWhere((s) => s.id == service.id);
 
