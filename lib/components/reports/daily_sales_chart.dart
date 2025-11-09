@@ -1,7 +1,8 @@
 import 'package:app_gringos_massas/models/daily_sale_report.dart';
+import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
-import 'package:app_gringos_massas/utils/sale_report_utils.dart';
+import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,8 +20,16 @@ class DailySalesChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<DailySaleReport> dailySales = SaleReportUtils.getDailySales(
-      Provider.of<SaleProvider>(context, listen: false).sales,
+        final sales = Provider.of<SaleProvider>(context).sales;
+
+    List<SaleOrService> list = sales
+        .map(
+          (sale) =>
+              SaleOrService(date: sale.date, data: sale, isService: false),
+        )
+        .toList();
+    List<DailySaleReport> dailySales = SaleServiceReportUtils.getDaily(
+      list,
       startDate,
       endDate,
     );
