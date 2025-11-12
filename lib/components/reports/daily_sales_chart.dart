@@ -1,33 +1,25 @@
 import 'package:app_gringos_massas/models/daily_sale_report.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
-import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class DailySalesChart extends StatelessWidget {
   const DailySalesChart({
     super.key,
+    required this.list,
     required this.startDate,
     required this.endDate,
   });
 
+  final List<SaleOrService> list;
   final DateTime startDate;
   final DateTime endDate;
 
   @override
   Widget build(BuildContext context) {
-        final sales = Provider.of<SaleProvider>(context).sales;
-
-    List<SaleOrService> list = sales
-        .map(
-          (sale) =>
-              SaleOrService(date: sale.date, data: sale, isService: false),
-        )
-        .toList();
     List<DailySaleReport> dailySales = SaleServiceReportUtils.getDaily(
       list,
       startDate,
@@ -115,27 +107,35 @@ class DailySalesChart extends StatelessWidget {
                   final dailySale = dailySales[spot.x.toInt()];
                   final totalValue = AppUtils.formatPrice(dailySale.totalValue);
                   return LineTooltipItem(
-                    '${DateFormat('dd/MM').format(dailySale.date)}\n',
-                    const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: '$totalValue\n',
-                        style: TextStyle(
-                          color: Colors.greenAccent,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'Vendas: ${dailySale.salesCount}',
-                        style: TextStyle(color: Colors.white70, fontSize: 11),
-                      ),
-                    ],
-                  );
+  '${DateFormat('dd/MM').format(dailySale.date)}\n',
+  const TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+    fontSize: 14,
+  ),
+  children: [
+    TextSpan(
+      text: '$totalValue\n',
+      style: const TextStyle(
+        color: Colors.greenAccent,
+        fontWeight: FontWeight.w600,
+        fontSize: 12,
+      ),
+    ),
+    if (dailySale.salesCount > 0)
+      TextSpan(
+        text:
+            'Vendas: ${dailySale.salesCount}\n', // quebra de linha no final
+        style: const TextStyle(color: Colors.white70, fontSize: 11),
+      ),
+    if (dailySale.serviceCount > 0)
+      TextSpan(
+        text: 'Serviços: ${dailySale.serviceCount}',
+        style: const TextStyle(color: Colors.white70, fontSize: 11),
+      ),
+  ],
+);
+
                 }).toList();
               },
             ),

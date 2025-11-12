@@ -6,14 +6,22 @@ import 'package:app_gringos_massas/models/service.dart';
 class SaleServiceReportUtils {
   //Relatórios de Vendas
 
-// Filtrar itens no período
+  // Filtrar itens no período
+  // Filtrar itens no período (incluindo o primeiro e o último dia)
   static List<SaleOrService> getItemsByPeriod(
     List<SaleOrService> items,
     DateTime start,
     DateTime end,
   ) {
+    // Normaliza as datas para comparar apenas ano/mês/dia
+    DateTime normalize(DateTime d) => DateTime(d.year, d.month, d.day);
+
+    final startDate = normalize(start);
+    final endDate = normalize(end);
+
     return items.where((i) {
-      return i.date.isAfter(start) && i.date.isBefore(end);
+      final itemDate = normalize(i.date);
+      return !itemDate.isBefore(startDate) && !itemDate.isAfter(endDate);
     }).toList();
   }
 
@@ -115,21 +123,25 @@ class SaleServiceReportUtils {
     DateTime current = DateTime(start.year, start.month, start.day);
 
     while (!current.isAfter(end)) {
-      final itemsOfDay = items.where((i) =>
-          i.date.year == current.year &&
-          i.date.month == current.month &&
-          i.date.day == current.day);
+      final itemsOfDay = items.where(
+        (i) =>
+            i.date.year == current.year &&
+            i.date.month == current.month &&
+            i.date.day == current.day,
+      );
 
       double total = 0;
-      int count = 0;
+      int saleCount = 0;
+      int serviceCount = 0;
 
       for (final item in itemsOfDay) {
         if (item.isService) {
           total += (item.data as Service).total;
+          serviceCount++;
         } else {
           total += (item.data as Sale).total;
+          saleCount++;
         }
-        count++;
       }
 
       if (total > 0) {
@@ -137,7 +149,8 @@ class SaleServiceReportUtils {
           DailySaleReport(
             date: current,
             totalValue: total,
-            salesCount: count,
+            salesCount: saleCount,
+            serviceCount: serviceCount,
           ),
         );
       }

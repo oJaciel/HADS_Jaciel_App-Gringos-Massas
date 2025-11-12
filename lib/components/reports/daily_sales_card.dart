@@ -1,7 +1,9 @@
+import 'package:app_gringos_massas/components/common/custom_filter_chip.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_chart.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
+import 'package:app_gringos_massas/providers/service_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 
@@ -25,6 +27,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
   DateTime? startDate = DateTime.now().subtract(Duration(days: 7));
   DateTime? endDate = DateTime.now();
+
+  bool showSaleReports = true;
+  bool showServiceReports = true;
 
   void _showDateRangePicker() {
     showDialog(
@@ -72,16 +77,29 @@ class _DailySalesCardState extends State<DailySalesCard> {
   @override
   Widget build(BuildContext context) {
     final sales = Provider.of<SaleProvider>(context).sales;
+    final services = Provider.of<ServiceProvider>(context).services;
 
-    List<SaleOrService> list = sales
-        .map(
-          (sale) =>
-              SaleOrService(date: sale.date, data: sale, isService: false),
-        )
-        .toList();
+    List<SaleOrService> combinedList = [
+      ...sales.map(
+        (sale) => SaleOrService(date: sale.date, data: sale, isService: false),
+      ),
+      ...services.map(
+        (service) =>
+            SaleOrService(date: service.date, data: service, isService: true),
+      ),
+    ];
+
+    //Filtrando a lista
+    List<SaleOrService> filteredList = combinedList.where((item) {
+      if (!showSaleReports && !showServiceReports) return false;
+      if (!showSaleReports && item.isService == false) return false;
+      if (!showServiceReports && item.isService == true) return false;
+
+      return true;
+    }).toList();
 
     final totalSalesValue = SaleServiceReportUtils.getTotalByPeriod(
-      list,
+      filteredList,
       startDate!,
       endDate!,
     );
@@ -160,6 +178,33 @@ class _DailySalesCardState extends State<DailySalesCard> {
               ),
 
               SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomFilterChip(
+                    label: 'Vendas',
+                    value: showSaleReports,
+                    onSelected: (value) {
+                      setState(() {
+                        showSaleReports = value;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(width: 10),
+                  CustomFilterChip(
+                    label: 'Serviços',
+                    value: showServiceReports,
+                    onSelected: (value) {
+                      setState(() {
+                        showServiceReports = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 10),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +216,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
                   SizedBox(width: 6),
                   Text(
                     AppUtils.formatPrice(totalSalesValue),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
               ),
@@ -189,9 +234,14 @@ class _DailySalesCardState extends State<DailySalesCard> {
                 height: 250,
                 child: TabBarView(
                   children: [
-                    DailySalesList(startDate: startDate!, endDate: endDate!),
+                    DailySalesList(
+                      list: filteredList,
+                      startDate: startDate!,
+                      endDate: endDate!,
+                    ),
                     SizedBox.expand(
                       child: DailySalesChart(
+                        list: filteredList,
                         startDate: startDate!,
                         endDate: endDate!,
                       ),

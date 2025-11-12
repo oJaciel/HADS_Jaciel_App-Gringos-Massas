@@ -1,33 +1,24 @@
 import 'package:app_gringos_massas/models/daily_sale_report.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
-import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class DailySalesList extends StatelessWidget {
   const DailySalesList({
     super.key,
+    required this.list,
     required this.startDate,
     required this.endDate,
   });
 
+  final List<SaleOrService> list;
   final DateTime startDate;
   final DateTime endDate;
 
   @override
   Widget build(BuildContext context) {
-    final sales = Provider.of<SaleProvider>(context).sales;
-
-    List<SaleOrService> list = sales
-        .map(
-          (sale) =>
-              SaleOrService(date: sale.date, data: sale, isService: false),
-        )
-        .toList();
-
     List<DailySaleReport> dailySales = SaleServiceReportUtils.getDaily(
       list,
       startDate,
@@ -73,11 +64,43 @@ class DailySalesList extends StatelessWidget {
                         fontSize: 18,
                       ),
                     ),
-                    Text(
-                      dailySales[index].salesCount > 1
-                          ? '${dailySales[index].salesCount} vendas'
-                          : '${dailySales[index].salesCount} venda',
-                      style: TextStyle(color: Colors.grey[800], fontSize: 14),
+                    Row(
+                      children: [
+                        if (dailySales[index].salesCount > 0)
+                          Text(
+                            dailySales[index].salesCount > 1
+                                ? '${dailySales[index].salesCount} vendas'
+                                : '${dailySales[index].salesCount} venda',
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 14,
+                            ),
+                          ),
+
+                        if (dailySales[index].salesCount > 0 &&
+                            dailySales[index].serviceCount > 0)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              '|',
+                              style: TextStyle(
+                                color: Colors.grey[800],
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+
+                        if (dailySales[index].serviceCount > 0)
+                          Text(
+                            dailySales[index].serviceCount > 1
+                                ? '${dailySales[index].serviceCount} serviços'
+                                : '${dailySales[index].serviceCount} serviço',
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 14,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
