@@ -41,6 +41,7 @@ dependencies:
   fl_chart: ^1.1.1
   custom_date_range_picker: ^1.2.0
   syncfusion_flutter_datepicker: ^31.2.3
+  month_picker_dialog: ^6.7.0
 
 dev_dependencies:
   flutter_test:

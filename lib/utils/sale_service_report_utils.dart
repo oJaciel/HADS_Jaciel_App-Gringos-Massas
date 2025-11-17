@@ -160,4 +160,44 @@ class SaleServiceReportUtils {
 
     return list;
   }
+
+  //Relatório mensal consolidado
+  static DailySaleReport getMonthly(
+    List<SaleOrService> items,
+    DateTime start,
+    DateTime end,
+  ) {
+    double total = 0;
+    int saleCount = 0;
+    int serviceCount = 0;
+
+    DateTime current = DateTime(start.year, start.month, start.day);
+
+    while (!current.isAfter(end)) {
+      final itemsOfDay = items.where(
+        (i) =>
+            i.date.year == current.year &&
+            i.date.month == current.month &&
+            i.date.day == current.day,
+      );
+
+      for (final item in itemsOfDay) {
+        if (item.isService) {
+          total += (item.data as Service).total;
+          serviceCount++;
+        } else {
+          total += (item.data as Sale).total;
+          saleCount++;
+        }
+      }
+
+      current = current.add(Duration(days: 1));
+    }
+    return DailySaleReport(
+      date: current,
+      totalValue: total,
+      salesCount: saleCount,
+      serviceCount: serviceCount,
+    );
+  }
 }
