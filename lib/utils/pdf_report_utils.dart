@@ -4,7 +4,6 @@ import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
 import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -26,126 +25,148 @@ class PdfReportUtils {
       endDate,
     );
 
+    final totalSalesValue = SaleServiceReportUtils.getTotalByPeriod(
+      list,
+      startDate,
+      endDate,
+    );
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         orientation: pw.PageOrientation.portrait,
         margin: pw.EdgeInsets.all(16),
+        header: (context) {
+          return pw.Container(
+            width: double.infinity,
+            decoration: pw.BoxDecoration(
+              border: pw.Border(
+                bottom: pw.BorderSide(width: 2),
+                left: pw.BorderSide(width: 2),
+                right: pw.BorderSide(width: 2),
+                top: pw.BorderSide(width: 2),
+              ),
+            ),
+            child: pw.Padding(
+              padding: pw.EdgeInsets.all(8),
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    'Análise de Vendas',
+                    style: pw.TextStyle(
+                      fontSize: 16,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    '${DateFormat('dd/MM/yyyy').format(startDate)} - ${DateFormat('dd/MM/yyyy').format(endDate)}',
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        footer: (context) {
+          return pw.Column(
+            children: [
+              pw.Divider(),
+              pw.Padding(
+                padding: pw.EdgeInsets.symmetric(horizontal: 8),
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
+                  children: [
+                    pw.Text('Gringo\'s Massas'),
+                    pw.Spacer(),
+                    pw.Text(
+                      'Impresso em ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}',
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
         build: (pw.Context context) {
           return [
             pw.Column(
               children: [
-                pw.Container(
-                  width: double.infinity,
-                  decoration: pw.BoxDecoration(
-                    border: pw.Border(
-                      bottom: pw.BorderSide(width: 2),
-                      left: pw.BorderSide(width: 2),
-                      right: pw.BorderSide(width: 2),
-                      top: pw.BorderSide(width: 2),
-                    ),
-                  ),
-                  child: pw.Padding(
-                    padding: pw.EdgeInsets.all(8),
-                    child: pw.Column(
-                      children: [
-                        pw.Text(
-                          'Análise de Vendas',
-                          style: pw.TextStyle(
-                            fontSize: 16,
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                        ),
-                        pw.SizedBox(height: 10),
-                        pw.Text(
-                          '${DateFormat('dd/MM/yyyy').format(startDate)} - ${DateFormat('dd/MM/yyyy').format(endDate)}',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                pw.ListView.builder(
-                  itemCount: dailySales.length,
-                  itemBuilder: (context, index) {
-                    return pw.Column(
-                      children: [
-                        pw.SizedBox(height: 2),
-                        pw.Divider(),
-                        pw.SizedBox(height: 2),
-                        pw.Row(
+                ...dailySales.map((daily) {
+                  return pw.Column(
+                    children: [
+                      pw.Divider(),
+                      pw.Padding(
+                        padding: pw.EdgeInsets.symmetric(horizontal: 8),
+                        child: pw.Row(
+                          crossAxisAlignment: pw.CrossAxisAlignment.center,
                           children: [
                             pw.Text(
-                              DateFormat(
-                                'dd/MM',
-                              ).format(dailySales[index].date),
+                              DateFormat('dd/MM').format(daily.date),
                               style: pw.TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: pw.FontWeight.bold,
                               ),
                             ),
-                            pw.Row(
-                              children: [
-                                pw.Container(
-                                  width: 6,
-                                  height: 40,
-                                  decoration: pw.BoxDecoration(
-                                    borderRadius: pw.BorderRadius.circular(3),
-                                  ),
-                                ),
-                                pw.SizedBox(width: 12),
-                                pw.Column(
-                                  crossAxisAlignment:
-                                      pw.CrossAxisAlignment.start,
-                                  children: [
-                                    pw.Text(
-                                      AppUtils.formatPrice(
-                                        dailySales[index].totalValue,
-                                      ),
-                                      style: pw.TextStyle(
-                                        fontWeight: pw.FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                    pw.Row(
-                                      children: [
-                                        if (dailySales[index].salesCount > 0)
-                                          pw.Text(
-                                            dailySales[index].salesCount > 1
-                                                ? '${dailySales[index].salesCount} vendas'
-                                                : '${dailySales[index].salesCount} venda',
-                                            style: pw.TextStyle(fontSize: 14),
-                                          ),
-
-                                        if (dailySales[index].salesCount > 0 &&
-                                            dailySales[index].serviceCount > 0)
-                                          pw.Padding(
-                                            padding: pw.EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                            ),
-                                            child: pw.Text(
-                                              '|',
-                                              style: pw.TextStyle(fontSize: 14),
-                                            ),
-                                          ),
-
-                                        if (dailySales[index].serviceCount > 0)
-                                          pw.Text(
-                                            dailySales[index].serviceCount > 1
-                                                ? '${dailySales[index].serviceCount} serviços'
-                                                : '${dailySales[index].serviceCount} serviço',
-                                            style: pw.TextStyle(fontSize: 14),
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            pw.SizedBox(width: 5),
+                            pw.Text('|', style: pw.TextStyle(fontSize: 14)),
+                            pw.SizedBox(width: 10),
+                            pw.Text(
+                              AppUtils.formatPrice(daily.totalValue),
+                              style: pw.TextStyle(fontSize: 14),
                             ),
+
+                            pw.Spacer(),
+
+                            if (daily.salesCount > 0)
+                              pw.Text(
+                                daily.salesCount > 1
+                                    ? '${daily.salesCount} vendas'
+                                    : '${daily.salesCount} venda',
+                                style: pw.TextStyle(fontSize: 14),
+                              ),
+                            if (daily.salesCount > 0 && daily.serviceCount > 0)
+                              pw.Padding(
+                                padding: pw.EdgeInsets.symmetric(horizontal: 8),
+                                child: pw.Text(
+                                  '|',
+                                  style: pw.TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            if (daily.serviceCount > 0)
+                              pw.Text(
+                                daily.serviceCount > 1
+                                    ? '${daily.serviceCount} serviços'
+                                    : '${daily.serviceCount} serviço',
+                                style: pw.TextStyle(fontSize: 14),
+                              ),
                           ],
                         ),
+                      ),
+                    ],
+                  );
+                }),
+
+                pw.Divider(),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                  children: [
+                    pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.end,
+                      children: [
+                        pw.Text(
+                          'Total do Período',
+                          style: pw.TextStyle(fontSize: 16),
+                        ),
+                        pw.Text(
+                          AppUtils.formatPrice(totalSalesValue),
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                       ],
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ],
             ),
