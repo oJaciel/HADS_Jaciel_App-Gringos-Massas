@@ -3,6 +3,7 @@ import 'package:app_gringos_massas/components/reports/monthly_sales_overview.dar
 import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/providers/service_provider.dart';
+import 'package:app_gringos_massas/utils/pdf_report_utils.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -94,6 +95,15 @@ class _MonthlySalesCardState extends State<MonthlySalesCard> {
                   Text(
                     'Vendas - Análise Mensal',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => PdfReportUtils.generatePdfReport(
+                      filteredList,
+                      startDate,
+                      endDate,
+                    ),
+                    icon: Icon(Icons.picture_as_pdf_rounded),
                   ),
                 ],
               ),

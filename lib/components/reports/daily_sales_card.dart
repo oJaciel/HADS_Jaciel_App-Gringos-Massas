@@ -5,6 +5,7 @@ import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/providers/service_provider.dart';
 import 'package:app_gringos_massas/utils/app_utils.dart';
+import 'package:app_gringos_massas/utils/pdf_report_utils.dart';
 import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 
 import 'package:flutter/material.dart';
@@ -133,6 +134,15 @@ class _DailySalesCardState extends State<DailySalesCard> {
                   Text(
                     'Vendas - Análise Diária',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () => PdfReportUtils.generatePdfReport(
+                      filteredList,
+                      startDate!,
+                      endDate!,
+                    ),
+                    icon: Icon(Icons.picture_as_pdf_rounded),
                   ),
                 ],
               ),
