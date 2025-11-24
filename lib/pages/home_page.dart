@@ -56,10 +56,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 16),
                   Expanded(
-                    child: GridView(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                      ),
+                    child: ListView(
+                      
 
                       children: [
                         HomePageButton(
