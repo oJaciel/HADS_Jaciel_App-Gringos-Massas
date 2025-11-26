@@ -10,12 +10,13 @@ class MonthlySalesOverview extends StatelessWidget {
     super.key,
     required this.list,
     required this.startDate,
-    required this.endDate,
+    required this.endDate, required this.isMonthly,
   });
 
   final List<SaleOrService> list;
   final DateTime startDate;
   final DateTime endDate;
+  final bool isMonthly;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class MonthlySalesOverview extends StatelessWidget {
               const SizedBox(height: 4),
 
               Text(
-                "Faturamento total do mês",
+                "Faturamento total do período",
                 style: TextStyle(fontSize: 14, color: Colors.grey[700]),
               ),
 
@@ -113,6 +114,7 @@ class MonthlySalesOverview extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
+                  !isMonthly ? "Período: ${DateFormat('dd/MM/yyyy').format(startDate)} - ${DateFormat('dd/MM/yyyy').format(endDate)}" :
                   "Período: ${DateFormat('MM/yyyy').format(startDate)}",
                   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),

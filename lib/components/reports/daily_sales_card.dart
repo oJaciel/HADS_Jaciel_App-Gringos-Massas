@@ -1,15 +1,15 @@
 import 'package:app_gringos_massas/components/common/custom_filter_chip.dart';
+import 'package:app_gringos_massas/components/reports/daily_date_range_picker.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_chart.dart';
 import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
+import 'package:app_gringos_massas/components/reports/monthly_date_picker.dart';
+import 'package:app_gringos_massas/components/reports/monthly_sales_overview.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/providers/service_provider.dart';
-import 'package:app_gringos_massas/utils/app_utils.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:app_gringos_massas/utils/pdf_report_utils.dart';
-import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -29,50 +29,14 @@ class _DailySalesCardState extends State<DailySalesCard> {
   DateTime? startDate = DateTime.now().subtract(Duration(days: 7));
   DateTime? endDate = DateTime.now();
 
+  bool isMonthly = false;
   bool showSaleReports = true;
   bool showServiceReports = true;
 
-  void _showDateRangePicker() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          contentPadding: const EdgeInsets.all(8),
-          content: SizedBox(
-            width: 350,
-            height: 380,
-            child: SfDateRangePicker(
-              selectionShape: DateRangePickerSelectionShape.rectangle,
-              headerStyle: DateRangePickerHeaderStyle(
-                backgroundColor: Colors.white,
-              ),
-              view: DateRangePickerView.month,
-              selectionMode: DateRangePickerSelectionMode.range,
-              backgroundColor: Colors.white,
-              minDate: DateTime(2025),
-              maxDate: DateTime.now(),
-              initialSelectedRange: PickerDateRange(startDate, endDate),
-              showActionButtons: true,
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              onSubmit: (Object? value) {
-                if (value is PickerDateRange) {
-                  setState(() {
-                    startDate = value.startDate;
-                    endDate = value.endDate;
-                  });
-                }
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        );
-      },
-    );
+  @override
+  void initState() {
+    initializeDateFormatting('pt_BR');
+    super.initState();
   }
 
   @override
@@ -98,15 +62,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
       return true;
     }).toList();
-
-    final totalSalesValue = SaleServiceReportUtils.getTotalByPeriod(
-      filteredList,
-      startDate!,
-      endDate!,
-    );
-
+    
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -125,17 +83,37 @@ class _DailySalesCardState extends State<DailySalesCard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
-                      Icons.calendar_month_rounded,
+                      !isMonthly ? Icons.date_range_rounded : Icons.calendar_month_rounded,
                       color: Colors.green,
                       size: 20,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    'Vendas - Análise Diária',
+                    !isMonthly
+                        ? 'Vendas - Análise Diária'
+                        : 'Vendas - Análise Mensal',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isMonthly = !isMonthly;
+                        startDate = DateTime(
+                          startDate!.year,
+                          startDate!.month,
+                          1,
+                        );
+                        endDate = DateTime(
+                          endDate!.year,
+                          endDate!.month + 1,
+                          0,
+                        );
+                      });
+                    },
+                    icon: Icon(Icons.change_circle_outlined),
+                  ),
                   IconButton(
                     onPressed: () => PdfReportUtils.generatePdfReport(
                       filteredList,
@@ -149,43 +127,30 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
               const SizedBox(height: 12),
 
-              InkWell(
-                onTap: _showDateRangePicker,
-                child: Chip(
-                  elevation: 2,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  backgroundColor: Theme.of(
-                    context,
-                  ).primaryColor.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    side: BorderSide(
-                      color: Theme.of(context).primaryColor.withOpacity(0.4),
+              !isMonthly
+                  ? DailyDateRangePicker(
+                      startDate: startDate!,
+                      endDate: endDate!,
+                      onSubmit: (Object? value) {
+                        if (value is PickerDateRange) {
+                          setState(() {
+                            startDate = value.startDate;
+                            endDate = value.endDate;
+                          });
+                        }
+                        Navigator.pop(context);
+                      },
+                    )
+                  : MonthlyDatePicker(
+                      startDate: startDate!,
+                      endDate: endDate!,
+                      onChanged: (start, end) {
+                        setState(() {
+                          startDate = start;
+                          endDate = end;
+                        });
+                      },
                     ),
-                  ),
-                  avatar: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Icon(
-                      Icons.date_range_rounded,
-                      color: Theme.of(context).primaryColor,
-                      size: 18,
-                    ),
-                  ),
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(DateFormat('dd/MM/yyyy').format(startDate!)),
-                      const SizedBox(width: 8),
-                      Icon(Icons.arrow_forward_rounded, size: 18),
-                      const SizedBox(width: 8),
-                      Text(DateFormat('dd/MM/yyyy').format(endDate!)),
-                    ],
-                  ),
-                ),
-              ),
 
               SizedBox(height: 10),
               Row(
@@ -216,25 +181,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
               SizedBox(height: 10),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Valor total do período:',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    AppUtils.formatPrice(totalSalesValue),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 10),
-
               TabBar(
                 tabs: [
+                  Tab(text: 'Visão Geral'),
                   Tab(text: 'Lista'),
                   Tab(text: 'Gráfico'),
                 ],
@@ -244,6 +193,14 @@ class _DailySalesCardState extends State<DailySalesCard> {
                 height: 250,
                 child: TabBarView(
                   children: [
+                    SizedBox.expand(
+                      child: MonthlySalesOverview(
+                        list: filteredList,
+                        startDate: startDate!,
+                        endDate: endDate!,
+                        isMonthly: isMonthly,
+                      ),
+                    ),
                     DailySalesList(
                       list: filteredList,
                       startDate: startDate!,
