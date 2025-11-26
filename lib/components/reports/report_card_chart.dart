@@ -6,8 +6,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DailySalesChart extends StatelessWidget {
-  const DailySalesChart({
+class ReportCardChart extends StatelessWidget {
+  const ReportCardChart({
     super.key,
     required this.list,
     required this.startDate,

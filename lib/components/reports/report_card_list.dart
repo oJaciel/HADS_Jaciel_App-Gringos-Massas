@@ -5,8 +5,8 @@ import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DailySalesList extends StatelessWidget {
-  const DailySalesList({
+class ReportCardList extends StatelessWidget {
+  const ReportCardList({
     super.key,
     required this.list,
     required this.startDate,

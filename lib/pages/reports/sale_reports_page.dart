@@ -1,6 +1,6 @@
 import 'package:app_gringos_massas/components/common/custom_filter_chip.dart';
 import 'package:app_gringos_massas/components/reports/custom_report_card.dart';
-import 'package:app_gringos_massas/components/reports/daily_sales_card.dart';
+import 'package:app_gringos_massas/components/reports/report_sales_card.dart';
 import 'package:app_gringos_massas/components/reports/report_date_dropdown_button.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
@@ -174,7 +174,7 @@ class _ReportsPageState extends State<SaleReportsPage> {
                 ],
               ),
               SizedBox(height: 12),
-              DailySalesCard(),
+              ReportSalesCard(),
             ],
           ),
         ),

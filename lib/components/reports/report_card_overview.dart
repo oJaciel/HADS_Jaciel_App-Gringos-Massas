@@ -5,8 +5,8 @@ import 'package:app_gringos_massas/utils/sale_service_report_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class MonthlySalesOverview extends StatelessWidget {
-  const MonthlySalesOverview({
+class ReportCardOverview extends StatelessWidget {
+  const ReportCardOverview({
     super.key,
     required this.list,
     required this.startDate,

@@ -1,9 +1,9 @@
 import 'package:app_gringos_massas/components/common/custom_filter_chip.dart';
 import 'package:app_gringos_massas/components/reports/daily_date_range_picker.dart';
-import 'package:app_gringos_massas/components/reports/daily_sales_chart.dart';
-import 'package:app_gringos_massas/components/reports/daily_sales_list.dart';
+import 'package:app_gringos_massas/components/reports/report_card_chart.dart';
+import 'package:app_gringos_massas/components/reports/report_card_list.dart';
 import 'package:app_gringos_massas/components/reports/monthly_date_picker.dart';
-import 'package:app_gringos_massas/components/reports/monthly_sales_overview.dart';
+import 'package:app_gringos_massas/components/reports/report_card_overview.dart';
 import 'package:app_gringos_massas/models/sale_or_service.dart';
 import 'package:app_gringos_massas/providers/sale_provider.dart';
 import 'package:app_gringos_massas/providers/service_provider.dart';
@@ -13,14 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class DailySalesCard extends StatefulWidget {
-  const DailySalesCard({super.key});
+class ReportSalesCard extends StatefulWidget {
+  const ReportSalesCard({super.key});
 
   @override
-  State<DailySalesCard> createState() => _DailySalesCardState();
+  State<ReportSalesCard> createState() => _DailySalesCardState();
 }
 
-class _DailySalesCardState extends State<DailySalesCard> {
+class _DailySalesCardState extends State<ReportSalesCard> {
   DateTimeRange selectedDates = DateTimeRange(
     start: DateTime(2025),
     end: DateTime.now(),
@@ -62,7 +62,7 @@ class _DailySalesCardState extends State<DailySalesCard> {
 
       return true;
     }).toList();
-    
+
     return DefaultTabController(
       length: 3,
       child: Card(
@@ -83,7 +83,9 @@ class _DailySalesCardState extends State<DailySalesCard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
-                      !isMonthly ? Icons.date_range_rounded : Icons.calendar_month_rounded,
+                      !isMonthly
+                          ? Icons.date_range_rounded
+                          : Icons.calendar_month_rounded,
                       color: Colors.green,
                       size: 20,
                     ),
@@ -194,20 +196,20 @@ class _DailySalesCardState extends State<DailySalesCard> {
                 child: TabBarView(
                   children: [
                     SizedBox.expand(
-                      child: MonthlySalesOverview(
+                      child: ReportCardOverview(
                         list: filteredList,
                         startDate: startDate!,
                         endDate: endDate!,
                         isMonthly: isMonthly,
                       ),
                     ),
-                    DailySalesList(
+                    ReportCardList(
                       list: filteredList,
                       startDate: startDate!,
                       endDate: endDate!,
                     ),
                     SizedBox.expand(
-                      child: DailySalesChart(
+                      child: ReportCardChart(
                         list: filteredList,
                         startDate: startDate!,
                         endDate: endDate!,
