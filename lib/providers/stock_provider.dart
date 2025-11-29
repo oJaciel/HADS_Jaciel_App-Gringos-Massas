@@ -154,11 +154,7 @@ class StockProvider with ChangeNotifier {
     }
 
     if (updatedStockQuantity < 0) {
-      showDialog(
-        context: context,
-        builder: (ctx) =>
-            ErrorDialog(content: 'Saída não pode causar estoque negativo!'),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Operação cancelada! Saída irá causar estoque negativo'), backgroundColor: Colors.red,));
       return;
     }
 
