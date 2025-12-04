@@ -366,14 +366,15 @@ class _SaleFormPageState extends State<SaleFormPage> {
                             _isSale
                                 ? Text(
                                     AppUtils.formatPrice(
-                                      Provider.of<SaleItemProvider>(
-                                        context,
-                                      ).totalAmount,
+                                      isEdit
+                                          ? (args as Sale).total
+                                          : Provider.of<SaleItemProvider>(
+                                              context,
+                                            ).totalAmount,
                                     ),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 17,
-                                      color: Colors.black87,
                                     ),
                                   )
                                 : Expanded(
