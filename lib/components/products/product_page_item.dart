@@ -26,48 +26,46 @@ class ProductPageItem extends StatelessWidget {
               child: ProductImage(product: product, height: 90, width: 80),
             ),
             SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                SizedBox(height: 4),
-                Text('Valor: ${AppUtils.formatPrice(product.price)}'),
-                SizedBox(height: 4),
-                Stack(
-                  children: [
-                    Container(
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    softWrap: true,
+                  ),
+                  SizedBox(height: 4),
+                  Text('Valor: ${AppUtils.formatPrice(product.price)}'),
+                  SizedBox(height: 4),
+
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: product.isActive ? Colors.green : Colors.red,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 10,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.circle, size: 6, color: Colors.white),
-                            SizedBox(width: 4),
-                            Text(
-                              product.isActive ? 'Ativo' : 'Inativo',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.circle, size: 6, color: Colors.white),
+                          SizedBox(width: 4),
+                          Text(
+                            product.isActive ? 'Ativo' : 'Inativo',
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
-            Spacer(),
 
             IconButton(
               onPressed: () {
