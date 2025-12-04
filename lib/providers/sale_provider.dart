@@ -67,12 +67,12 @@ class SaleProvider with ChangeNotifier {
       context,
       listen: false,
     );
+    final productProvider = Provider.of<ProductProvider>(
+      context,
+      listen: false,
+    );
 
     for (var saleItem in saleItemProvider.items.values) {
-      final productProvider = Provider.of<ProductProvider>(
-        context,
-        listen: false,
-      );
       final product = productProvider.getProductById(saleItem.productId);
 
       final updatedStockQuantity = product.stockQuantity - saleItem.quantity;
@@ -82,9 +82,6 @@ class SaleProvider with ChangeNotifier {
         updatedStockQuantity,
         context,
       );
-
-      await productProvider
-          .loadProducts(); //Faz um load dos produtos para atualizar os estoques na tela
 
       if (!success) {
         // Interrompe todo o processo se algum produto falhar
@@ -134,6 +131,9 @@ class SaleProvider with ChangeNotifier {
     saleItemProvider.clear();
     Navigator.of(context).pop();
 
+
+    await productProvider
+        .loadProducts(); //Faz um load dos produtos para atualizar os estoques na tela
     await loadSales();
 
     //Ordena a lista por ordem de data
